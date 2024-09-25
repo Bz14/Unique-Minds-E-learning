@@ -36,11 +36,16 @@ func (d *Database) Disconnect(connection *mongo.Client) error {
 	return nil
 }
 
-func (d *Database) CreateCollection (url string, databaseName string, collectionName string) (*mongo.Collection, error){
+func (d *Database) CreateDB(url string, databaseName string) (*mongo.Database, error){
 	connection, err := d.Connect(url)
 	if err != nil{
 		return nil, err
 	}
-	collection := connection.Database(databaseName).Collection(collectionName)
+	database := connection.Database(databaseName)
+	return database, nil
+}
+
+func (d *Database) CreateCollection (database *mongo.Database, collectionName string) (*mongo.Collection, error){
+	collection := database.Collection(collectionName)
 	return collection, nil
 }
