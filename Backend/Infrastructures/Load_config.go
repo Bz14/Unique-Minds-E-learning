@@ -4,15 +4,20 @@ import (
 	"errors"
 	"os"
 	"strconv"
-	domain "unique-minds/domain"
 
 	"github.com/joho/godotenv"
 )
+type Config struct {
+	DatabaseURL     string
+	DatabaseName    string
+	UsersCollection string
+	ServerPort      int
+}
 
-func LoadConfig() (domain.Config, error) {
+func LoadConfig() (*Config, error) {
 	err := godotenv.Load()
 	if err != nil {
-		return domain.Config{}, errors.New("Error loading .env file, assuming production environment")
+		return nil, errors.New("error loading .env file, assuming production environment")
 	}
 
 	url := os.Getenv("DATABASE_URL")
@@ -22,10 +27,10 @@ func LoadConfig() (domain.Config, error) {
 
 	port_str, err := strconv.Atoi(port)
 	if err != nil {
-		return domain.Config{}, errors.New("Invalid port value")
+		return nil, errors.New("invalid port value")
 	}
 
-	return domain.Config{
+	return &Config{
 		DatabaseURL:     url,
 		DatabaseName:    dbName,
 		UsersCollection: usersCollection,

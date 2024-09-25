@@ -1,7 +1,7 @@
 package router
 
 import (
-	domain "unique-minds/Domain"
+	infrastructures "unique-minds/Infrastructures"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,6 +15,6 @@ func NewRouter() *Router {
 	return &Router{}
 }
 
-func (r *Router) Init(server *gin.Engine, db *mongo.Database, config *domain.Config) {
+func (r *Router) Init(server *gin.Engine, db *mongo.Database, config *infrastructures.Config) {
 
 }

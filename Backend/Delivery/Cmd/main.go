@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	infrastructures "unique-minds/Infrastructures"
-	router "unique-minds/Router"
+	router "unique-minds/Delivery/Router"
+	infrastructures "unique-minds/infrastructures"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,7 +26,7 @@ func main() {
 
 	route := router.NewRouter()
 
-	route.Init(server, db, config)
+	route.Init(server, db, &config)
 
 	server.Run(fmt.Sprintf(":%d", config.ServerPort))
 }
