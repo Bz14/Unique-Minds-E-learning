@@ -14,6 +14,10 @@ type ValidatorInterface interface {
 	ValidateRole(role string) error
 }
 
+func NewValidator() *Validator {
+	return &Validator{}
+}
+
 func (v *Validator) ValidateEmail(email string) error {
 	regex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	if !regex.MatchString(email) {
