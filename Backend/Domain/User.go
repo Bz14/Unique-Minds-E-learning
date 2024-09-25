@@ -1,6 +1,10 @@
-package domain
+package Domain
 
-import "time"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type User struct {
 	ID         primitive.ObjectId `json:"id" bson:"_id"`
