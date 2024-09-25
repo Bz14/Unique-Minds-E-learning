@@ -12,6 +12,7 @@ type Config struct {
 	DatabaseName    string
 	UsersCollection string
 	ServerPort      int
+	TimeOut 	   int
 }
 
 func LoadConfig() (*Config, error) {
@@ -24,16 +25,25 @@ func LoadConfig() (*Config, error) {
 	dbName := os.Getenv("DATABASE_NAME")
 	usersCollection := os.Getenv("USERS_COLLECTION")
 	port := os.Getenv("PORT")
+	timeOut := os.Getenv("TIMEOUT")
 
 	port_str, err := strconv.Atoi(port)
 	if err != nil {
 		return nil, errors.New("invalid port value")
 	}
 
+	timeOut_str, err := strconv.Atoi(timeOut)
+	if err != nil {
+		return nil, errors.New("invalid timeout value")
+	}
+
+
+
 	return &Config{
 		DatabaseURL:     url,
 		DatabaseName:    dbName,
 		UsersCollection: usersCollection,
 		ServerPort:      port_str,
+		TimeOut:         timeOut_str,
 	}, nil
 }

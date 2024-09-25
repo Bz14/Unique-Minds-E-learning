@@ -15,6 +15,6 @@ func NewRouter() *Router {
 	return &Router{}
 }
 
-func (r *Router) Init(server *gin.Engine, db *mongo.Database, config *infrastructures.Config) {
-
+func (r *Router) Init(server *gin.Engine, database *infrastructures.Database, db *mongo.Database, config *infrastructures.Config) {
+	NewSignUpRouter(server, database, db, config)
 }
