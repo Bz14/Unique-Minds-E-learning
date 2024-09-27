@@ -11,10 +11,13 @@ type User struct {
 	Email      string             `json:"email" bson:"email"`
 	Password   string             `json:"password" bson:"password"`
 	Role       string             `json:"role" bson:"role"`
+	IsVerified bool 			  `json:"is_verified" bson:"is_verified"`
 	Created_at time.Time          `json:"created_at" bson:"created_at"`
 	Updated_at time.Time          `json:"updated_at" bson:"updated_at"`
 }
 
-type UserUseCaseInterface interface {}
+type UserUseCaseInterface interface {
+	SignUp(signUpRequest SignUpRequest) error
+}
 
 type UserRepoInterface interface {}

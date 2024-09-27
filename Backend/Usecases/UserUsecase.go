@@ -12,3 +12,7 @@ func NewUserUseCase(repo domain.UserRepoInterface) *UserUseCase {
 		userRepo : repo,
 	}
 }
+
+func (uc *UserUseCase) SignUp(signUpRequest domain.SignUpRequest) error {
+	return nil
+}
