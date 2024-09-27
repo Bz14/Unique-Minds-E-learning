@@ -14,3 +14,7 @@ type User struct {
 	Created_at time.Time          `json:"created_at" bson:"created_at"`
 	Updated_at time.Time          `json:"updated_at" bson:"updated_at"`
 }
+
+type UserUseCaseInterface interface {}
+
+type UserRepoInterface interface {}

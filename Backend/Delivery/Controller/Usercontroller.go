@@ -1,9 +1,15 @@
 package controller
 
-type UserController struct{}
+import domain "unique-minds/Domain"
+
+type UserController struct {
+	userController domain.UserUseCaseInterface
+}
 
 type UserControllerInterface interface{}
 
-func NewUserController() *UserController {
-	return &UserController{}
+func NewUserController(userUseCase domain.UserUseCaseInterface) *UserController {
+	return &UserController{
+		userController: userUseCase,
+	}
 }

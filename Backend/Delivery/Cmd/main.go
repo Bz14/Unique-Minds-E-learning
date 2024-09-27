@@ -26,7 +26,7 @@ func main() {
 
 	route := router.NewRouter()
 
-	route.Init(server, database, db, &config)
+	route.Init(server, database, db, config)
 
 	server.Run(fmt.Sprintf(":%d", config.ServerPort))
 }

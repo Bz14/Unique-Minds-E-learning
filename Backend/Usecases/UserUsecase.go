@@ -1,9 +1,14 @@
 package usecases
 
-type UserUseCase struct{}
+import domain "unique-minds/Domain"
 
-type UserUseCaseInterface interface{}
+type UserUseCase struct {
+	userRepo domain.UserRepoInterface
+}
 
-func NewUserUseCase() *UserUseCase {
-	return &UserUseCase{}
+
+func NewUserUseCase(repo domain.UserRepoInterface) *UserUseCase {
+	return &UserUseCase{
+		userRepo : repo,
+	}
 }
