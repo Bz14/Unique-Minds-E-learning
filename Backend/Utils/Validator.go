@@ -8,12 +8,6 @@ import (
 
 type Validator struct{}
 
-type ValidatorInterface interface {
-	ValidateEmail(email string) error
-	ValidatePassword(password string) error
-	ValidateRole(role string) error
-}
-
 func NewValidator() *Validator {
 	return &Validator{}
 }

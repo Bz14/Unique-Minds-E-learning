@@ -20,4 +20,6 @@ type UserUseCaseInterface interface {
 	SignUp(signUpRequest SignUpRequest) error
 }
 
-type UserRepoInterface interface {}
+type UserRepoInterface interface {
+	FindUserByEmail(email string) error
+}

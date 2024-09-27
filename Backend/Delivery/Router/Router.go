@@ -20,5 +20,5 @@ func (r *Router) Init(server *gin.Engine, database *infrastructures.Database, db
 	if err != nil{
 		panic(err)
 	}
-	NewUserRouter(server, user_collection)
+	NewUserRouter(server, user_collection, config)
 } 
