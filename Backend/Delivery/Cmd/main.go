@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ func main() {
 	database := infrastructures.NewDatabase()
 	db, err := database.CreateDB(config.DatabaseURL, config.DatabaseName)
 
-	if err != nil {
+	if err != nil {  
 		panic(err)
 	}
 
