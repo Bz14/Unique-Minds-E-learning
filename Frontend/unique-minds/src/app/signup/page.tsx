@@ -7,6 +7,7 @@ import { useState } from "react";
 const SignUp = () => {
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(true);
+  const [userType, setUserType] = useState("student");
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="shadow-2xl rounded-lg overflow-hidden max-w-lg w-full bg-white mt-10 mx-auto">
@@ -73,7 +74,7 @@ const SignUp = () => {
                 }
               >
                 <span className="mt-6">
-                  {passwordVisible ? (
+                  {confirmPasswordVisible ? (
                     <MdVisibilityOff size={24} className="text-gray-500" />
                   ) : (
                     <MdVisibility size={24} className="text-gray-500" />
@@ -83,14 +84,24 @@ const SignUp = () => {
             </div>
             <div className="flex space-x-4 justify-center">
               <button
+                onClick={() => setUserType("student")}
                 type="button"
-                className="w-full py-3 px-6 bg-customBlue text-white rounded-lg shadow-md hover:bg-blue-400 transition ease-in-out duration-300"
+                className={`w-full py-3 px-6 ${
+                  userType == "student"
+                    ? "bg-customBlue text-white"
+                    : "bg-white text-gray-800"
+                } rounded-lg shadow-md hover:bg-gray-500 transition ease-in-out duration-300`}
               >
                 Student
               </button>
               <button
+                onClick={() => setUserType("teacher")}
                 type="button"
-                className="w-full py-3 px-6 bg-white text-gray rounded-lg shadow-md hover:bg-gray-300 transition ease-in-out duration-300"
+                className={`w-full py-3 px-6 ${
+                  userType == "teacher"
+                    ? "bg-customBlue text-white"
+                    : "bg-white text-gray-800"
+                } rounded-lg shadow-md hover:bg-gray-500 transition ease-in-out duration-300`}
               >
                 Teacher
               </button>
@@ -98,7 +109,7 @@ const SignUp = () => {
             <div>
               <button
                 type="submit"
-                className="w-full py-3 px-6 bg-customBlue text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-300"
+                className="w-full py-3 px-6 bg-customBlue text-white rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-300"
               >
                 Create Account
               </button>
