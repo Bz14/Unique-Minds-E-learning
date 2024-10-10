@@ -1,18 +1,16 @@
 package utils
 
-type PasswordService struct{}
+import "golang.org/x/crypto/bcrypt"
 
-type PasswordServiceInterface interface {
-	HashPassword(password string) (string, error)
-	UnHashPassword(hashedPassword string, password string) error
-}
+type PasswordService struct{}
 
 func NewPasswordService() *PasswordService {
 	return &PasswordService{}
 }
 
 func (ps *PasswordService) HashPassword(password string) (string, error) {
-	return "", nil
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(hashedPassword), err
 }
 
 func (ps *PasswordService) UnHashPassword(hashedPassword string, password string) error {
