@@ -4,13 +4,31 @@ import { FcGoogle } from "react-icons/fc";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { DevTool } from "@hookform/devtools";
+
+type SignUpForm = {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  userType: string;
+};
 
 const SignUp = () => {
-  const form = useForm();
-  const { register, handleSubmit } = form;
+  const form = useForm<SignUpForm>();
+  const { register, control, handleSubmit, setValue } = form;
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(true);
   const [userType, setUserType] = useState("student");
+
+  const onSubmit = (data: SignUpForm) => {
+    console.log(data);
+  };
+
+  const handleUserType = (type: string) => {
+    setUserType(type);
+    setValue("userType", type);
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="shadow-2xl rounded-lg overflow-hidden max-w-lg w-full bg-white mt-10 mx-auto">
@@ -18,7 +36,7 @@ const SignUp = () => {
           <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">
             Create Your Account
           </h1>
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label
                 htmlFor="full-name"
@@ -29,7 +47,7 @@ const SignUp = () => {
               <input
                 type="text"
                 placeholder="Enter your full name"
-                {...register("full-name")}
+                {...register("fullName")}
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
               />
             </div>
@@ -82,7 +100,7 @@ const SignUp = () => {
                 Confirm Password
               </label>
               <input
-                {...register("confirm-password")}
+                {...register("confirmPassword")}
                 type={confirmPasswordVisible ? "password" : "text"}
                 placeholder="Confirm your password"
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
@@ -104,7 +122,7 @@ const SignUp = () => {
             </div>
             <div className="flex space-x-4 justify-center">
               <button
-                onClick={() => setUserType("student")}
+                onClick={() => handleUserType("student")}
                 type="button"
                 className={`w-full py-3 px-6 ${
                   userType == "student"
@@ -115,7 +133,7 @@ const SignUp = () => {
                 Student
               </button>
               <button
-                onClick={() => setUserType("teacher")}
+                onClick={() => handleUserType("teacher")}
                 type="button"
                 className={`w-full py-3 px-6 ${
                   userType == "teacher"
@@ -168,6 +186,7 @@ const SignUp = () => {
           </form>
         </div>
       </div>
+      <DevTool control={control} />
     </div>
   );
 };
