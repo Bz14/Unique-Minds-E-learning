@@ -1,9 +1,16 @@
+"use client";
 import Link from "next/link";
-import PasswordComponent from "./components/password";
 import { FcGoogle } from "react-icons/fc";
-import RoleComponent from "./components/role";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 const SignUp = () => {
+  const form = useForm();
+  const { register, handleSubmit } = form;
+  const [passwordVisible, setPasswordVisible] = useState(true);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(true);
+  const [userType, setUserType] = useState("student");
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="shadow-2xl rounded-lg overflow-hidden max-w-lg w-full bg-white mt-10 mx-auto">
@@ -13,27 +20,57 @@ const SignUp = () => {
           </h1>
           <form className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-600">
+              <label
+                htmlFor="full-name"
+                className="block text-sm font-semibold text-gray-600"
+              >
                 Full Name
               </label>
               <input
                 type="text"
                 placeholder="Enter your full name"
+                {...register("fullname")}
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-600">
+              <label
+                htmlFor="email"
+                className="block text-sm font-semibold text-gray-600"
+              >
                 Email Address
               </label>
               <input
+                name="email"
                 type="email"
                 placeholder="Enter your email"
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
               />
             </div>
-            <PasswordComponent />
-            <RoleComponent />
+            <div className="flex space-x-4 justify-center">
+              <button
+                onClick={() => setUserType("student")}
+                type="button"
+                className={`w-full py-3 px-6 ${
+                  userType == "student"
+                    ? "bg-customBlue text-white"
+                    : "bg-white text-gray-800"
+                } rounded-lg shadow-md hover:bg-gray-500 transition ease-in-out duration-300`}
+              >
+                Student
+              </button>
+              <button
+                onClick={() => setUserType("teacher")}
+                type="button"
+                className={`w-full py-3 px-6 ${
+                  userType == "teacher"
+                    ? "bg-customBlue text-white"
+                    : "bg-white text-gray-800"
+                } rounded-lg shadow-md hover:bg-gray-500 transition ease-in-out duration-300`}
+              >
+                Teacher
+              </button>
+            </div>
             <div>
               <button
                 type="submit"
@@ -45,7 +82,7 @@ const SignUp = () => {
             <div className="text-center mt-6">
               <h3 className="text-sm">
                 Already have an account?{" "}
-                <Link href="/login">
+                <Link href="/user/login">
                   <span className="text-indigo-600 hover:text-indigo-500 font-semibold">
                     Log In
                   </span>
