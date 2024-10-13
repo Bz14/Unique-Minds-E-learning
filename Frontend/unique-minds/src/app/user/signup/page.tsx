@@ -3,9 +3,8 @@ import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DevTool } from "@hookform/devtools";
-import { watch } from "fs";
 
 type SignUpForm = {
   fullName: string;
@@ -16,14 +15,26 @@ type SignUpForm = {
 };
 
 const SignUp = () => {
-  const form = useForm<SignUpForm>();
-  const { register, control, handleSubmit, setValue, formState } = form;
+  const form = useForm<SignUpForm>({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      userType: "student",
+    },
+  });
+  const { register, control, handleSubmit, setValue, formState, watch } = form;
   const { errors } = formState;
   const [passwordVisible, setPasswordVisible] = useState(true);
+  const [password, setPassword] = useState("");
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(true);
   const [userType, setUserType] = useState("student");
 
-  const password = watch("password");
+  useEffect(() => {
+    const password = watch("password");
+    setPassword(password);
+  }, [watch("password")]);
 
   const onSubmit = (data: SignUpForm) => {
     console.log(data);
@@ -86,7 +97,6 @@ const SignUp = () => {
                     message: "Invalid email.",
                   },
                 })}
-                name="email"
                 type="email"
                 placeholder="Enter your email"
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
@@ -147,6 +157,11 @@ const SignUp = () => {
                   required: {
                     value: true,
                     message: "Please confirm your password.",
+                  },
+                  validate: {
+                    matchPassword: (value) => {
+                      return value === password || "Passwords do not match.";
+                    },
                   },
                 })}
                 type={confirmPasswordVisible ? "password" : "text"}
