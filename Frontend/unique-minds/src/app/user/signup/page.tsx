@@ -36,7 +36,16 @@ const SignUp = () => {
     setPassword(password);
   }, [watch("password")]);
 
-  const onSubmit = (data: SignUpForm) => {
+  const onSubmit = async (data: SignUpForm) => {
+    const response = await fetch("http://localhost:3000/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+    }
     console.log(data);
   };
 
