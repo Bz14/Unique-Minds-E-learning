@@ -5,6 +5,7 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { DevTool } from "@hookform/devtools";
+import { useRouter } from "next/navigation";
 
 type SignUpForm = {
   fullName: string;
@@ -30,6 +31,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(true);
   const [userType, setUserType] = useState("student");
+  const router = useRouter();
 
   useEffect(() => {
     const password = watch("password");
@@ -37,16 +39,25 @@ const SignUp = () => {
   }, [watch("password")]);
 
   const onSubmit = async (data: SignUpForm) => {
-    const response = await fetch("http://localhost:3000/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (response.ok) {
+    try {
+      const response = await fetch("http://localhost:3000/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(
+          data.message || "An error occurred while creating your account."
+        );
+      }
+      router.push("/login");
+    } catch (error) {
+      console.log("Error", error);
+      throw error;
     }
-    console.log(data);
   };
 
   const handleUserType = (type: string) => {
