@@ -5,6 +5,7 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { DevTool } from "@hookform/devtools";
+import { watch } from "fs";
 
 type SignUpForm = {
   fullName: string;
@@ -16,10 +17,13 @@ type SignUpForm = {
 
 const SignUp = () => {
   const form = useForm<SignUpForm>();
-  const { register, control, handleSubmit, setValue } = form;
+  const { register, control, handleSubmit, setValue, formState } = form;
+  const { errors } = formState;
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(true);
   const [userType, setUserType] = useState("student");
+
+  const password = watch("password");
 
   const onSubmit = (data: SignUpForm) => {
     console.log(data);
@@ -36,7 +40,11 @@ const SignUp = () => {
           <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">
             Create Your Account
           </h1>
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="space-y-6"
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+          >
             <div>
               <label
                 htmlFor="full-name"
@@ -47,9 +55,17 @@ const SignUp = () => {
               <input
                 type="text"
                 placeholder="Enter your full name"
-                {...register("fullName")}
+                {...register("fullName", {
+                  required: {
+                    value: true,
+                    message: "Full name is required.",
+                  },
+                })}
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
               />
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors.fullName?.message}
+              </p>
             </div>
             <div>
               <label
@@ -59,12 +75,25 @@ const SignUp = () => {
                 Email Address
               </label>
               <input
-                {...register("email")}
+                {...register("email", {
+                  required: {
+                    value: true,
+                    message: "Email is required.",
+                  },
+                  pattern: {
+                    value:
+                      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                    message: "Invalid email.",
+                  },
+                })}
                 name="email"
                 type="email"
                 placeholder="Enter your email"
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
               />
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors.email?.message}
+              </p>
             </div>
             <div className="relative">
               <label
@@ -74,7 +103,18 @@ const SignUp = () => {
                 Password
               </label>
               <input
-                {...register("password")}
+                {...register("password", {
+                  required: {
+                    value: true,
+                    message: "Password is required.",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character",
+                  },
+                })}
                 type={passwordVisible ? "password" : "text"}
                 placeholder="Create a password"
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
@@ -91,6 +131,9 @@ const SignUp = () => {
                   )}
                 </span>
               </div>
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors.password?.message}
+              </p>
             </div>
             <div className="relative">
               <label
@@ -100,7 +143,12 @@ const SignUp = () => {
                 Confirm Password
               </label>
               <input
-                {...register("confirmPassword")}
+                {...register("confirmPassword", {
+                  required: {
+                    value: true,
+                    message: "Please confirm your password.",
+                  },
+                })}
                 type={confirmPasswordVisible ? "password" : "text"}
                 placeholder="Confirm your password"
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
@@ -119,6 +167,9 @@ const SignUp = () => {
                   )}
                 </span>
               </div>
+              <p style={{ color: "red", fontSize: "12px" }}>
+                {errors.confirmPassword?.message}
+              </p>
             </div>
             <div className="flex space-x-4 justify-center">
               <button
