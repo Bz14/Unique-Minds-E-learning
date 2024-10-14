@@ -2,10 +2,11 @@
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { useForm } from "react-hook-form";
+import { FieldErrors, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { DevTool } from "@hookform/devtools";
 import { useRouter } from "next/navigation";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 type SignUpForm = {
   fullName: string;
@@ -15,6 +16,35 @@ type SignUpForm = {
   userType: string;
 };
 
+const schema = yup.object({
+  fullName: yup.string().required("Full name is required."),
+  email: yup
+    .string()
+    .required("Email is required.")
+    .email("Invalid email format."),
+  password: yup
+    .string()
+    .required("Password is required.")
+    .min(8, "Password must be at least 8 characters.")
+    .matches(
+      /(?=.*[A-Z])/,
+      "Password must contain at least one uppercase letter."
+    )
+    .matches(
+      /(?=.*[a-z])/,
+      "Password must contain at least one lowercase letter."
+    )
+    .matches(/(?=.*[0-9])/, "Password must contain at least one number.")
+    .matches(
+      /(?=.*[@$!%*?&])/,
+      "Password must contain at least one special character."
+    ),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password"), undefined], "Passwords must match.")
+    .required("Please confirm your password."),
+  userType: yup.string().required("User type is required."),
+});
 const SignUp = () => {
   const form = useForm<SignUpForm>({
     defaultValues: {
@@ -24,19 +54,26 @@ const SignUp = () => {
       confirmPassword: "",
       userType: "student",
     },
+    mode: "all",
+    resolver: yupResolver(schema),
   });
-  const { register, control, handleSubmit, setValue, formState, watch } = form;
-  const { errors } = formState;
+  const { register, handleSubmit, setValue, formState, reset } = form;
+  const { errors, isDirty, isValid, isSubmitting, isSubmitSuccessful } =
+    formState;
   const [passwordVisible, setPasswordVisible] = useState(true);
-  const [password, setPassword] = useState("");
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(true);
   const [userType, setUserType] = useState("student");
   const router = useRouter();
 
   useEffect(() => {
-    const password = watch("password");
-    setPassword(password);
-  }, [watch("password")]);
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
+
+  const onError = (errors: FieldErrors<SignUpForm>) => {
+    console.log("Errors", errors);
+  };
 
   const onSubmit = async (data: SignUpForm) => {
     try {
@@ -53,6 +90,7 @@ const SignUp = () => {
           data.message || "An error occurred while creating your account."
         );
       }
+      reset();
       router.push("/login");
     } catch (error) {
       console.log("Error", error);
@@ -73,7 +111,7 @@ const SignUp = () => {
           </h1>
           <form
             className="space-y-6"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(onSubmit, onError)}
             noValidate
           >
             <div>
@@ -86,12 +124,7 @@ const SignUp = () => {
               <input
                 type="text"
                 placeholder="Enter your full name"
-                {...register("fullName", {
-                  required: {
-                    value: true,
-                    message: "Full name is required.",
-                  },
-                })}
+                {...register("fullName")}
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
               />
               <p style={{ color: "red", fontSize: "12px" }}>
@@ -107,14 +140,14 @@ const SignUp = () => {
               </label>
               <input
                 {...register("email", {
-                  required: {
-                    value: true,
-                    message: "Email is required.",
-                  },
-                  pattern: {
-                    value:
-                      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-                    message: "Invalid email.",
+                  validate: {
+                    emailAvailable: async (fieldValue) => {
+                      const response = await fetch(
+                        `http://localhost:3000/api/auth/signup?email=${fieldValue}`
+                      );
+                      const data = response.json;
+                      return data.length == 0 || "Email already exists.";
+                    },
                   },
                 })}
                 type="email"
@@ -133,18 +166,7 @@ const SignUp = () => {
                 Password
               </label>
               <input
-                {...register("password", {
-                  required: {
-                    value: true,
-                    message: "Password is required.",
-                  },
-                  pattern: {
-                    value:
-                      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                    message:
-                      "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character",
-                  },
-                })}
+                {...register("password")}
                 type={passwordVisible ? "password" : "text"}
                 placeholder="Create a password"
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
@@ -173,17 +195,7 @@ const SignUp = () => {
                 Confirm Password
               </label>
               <input
-                {...register("confirmPassword", {
-                  required: {
-                    value: true,
-                    message: "Please confirm your password.",
-                  },
-                  validate: {
-                    matchPassword: (value) => {
-                      return value === password || "Passwords do not match.";
-                    },
-                  },
-                })}
+                {...register("confirmPassword")}
                 type={confirmPasswordVisible ? "password" : "text"}
                 placeholder="Confirm your password"
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
@@ -233,6 +245,7 @@ const SignUp = () => {
             <div>
               <button
                 type="submit"
+                disabled={(!isDirty && !isValid) || isSubmitting}
                 className="w-full py-3 px-6 bg-customBlue text-white rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-300"
               >
                 Create Account
@@ -272,7 +285,6 @@ const SignUp = () => {
           </form>
         </div>
       </div>
-      <DevTool control={control} />
     </div>
   );
 };
