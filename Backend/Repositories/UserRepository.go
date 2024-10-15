@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 	"time"
 	domain "unique-minds/Domain"
 	infrastructures "unique-minds/Infrastructures"
@@ -39,5 +40,6 @@ func (ur *UserRepository) CreateUser(user *domain.User) error{
 	defer cancel()
 	user.ID = primitive.NewObjectID()
 	_, err := ur.userCollection.InsertOne(context, user)
+	fmt.Println(err)
 	return err
 }

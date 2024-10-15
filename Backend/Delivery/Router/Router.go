@@ -15,10 +15,6 @@ func NewRouter() *Router {
 	return &Router{}
 }
 
-func (r *Router) Init(server *gin.Engine, database *infrastructures.Database, db *mongo.Database, config *infrastructures.Config) {
-	user_collection, err := database.CreateCollection(db, config.UsersCollection)
-	if err != nil{
-		panic(err)
-	}
-	NewUserRouter(server, user_collection, config)
+func (r *Router) Init(server *gin.RouterGroup, database *infrastructures.Database, db *mongo.Database, config *infrastructures.Config) {
+	NewUserRouter(server, database, db, config)
 } 

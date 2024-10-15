@@ -23,7 +23,7 @@ func LoadConfig() (*Config, error) {
 
 	url := os.Getenv("DATABASE_URL")
 	dbName := os.Getenv("DATABASE_NAME")
-	usersCollection := os.Getenv("USERS_COLLECTION")
+	usersCollection := os.Getenv("USER_COLLECTION")
 	port := os.Getenv("PORT")
 	timeOut := os.Getenv("TIMEOUT")
 
@@ -36,8 +36,6 @@ func LoadConfig() (*Config, error) {
 	if err != nil {
 		return nil, errors.New("invalid timeout value")
 	}
-
-
 
 	return &Config{
 		DatabaseURL:     url,

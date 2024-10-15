@@ -49,8 +49,8 @@ func (v *Validator) ValidatePassword(password string) error {
 }
 
 func (v *Validator) ValidateRole(role string) error {
-	if strings.ToLower(role) != "educator" && strings.ToLower(role) != "student"{
-		return errors.New("role must be either educator or student")
+	if strings.ToLower(role) != "teacher" && strings.ToLower(role) != "student"{
+		return errors.New("role must be either teacher or student")
 	}
 	return nil
 }

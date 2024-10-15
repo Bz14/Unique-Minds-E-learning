@@ -46,6 +46,7 @@ const schema = yup.object({
   userType: yup.string().required("User type is required."),
 });
 const SignUp = () => {
+  const apiUrl = process.env.NEXT_PUBLIC_API;
   const form = useForm<SignUpForm>({
     defaultValues: {
       fullName: "",
@@ -76,8 +77,9 @@ const SignUp = () => {
   };
 
   const onSubmit = async (data: SignUpForm) => {
+    console.log(data);
     try {
-      const response = await fetch("http://localhost:3000/api/auth/signup", {
+      const response = await fetch(`${apiUrl}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -52,3 +52,22 @@ func (uc *UserController) SignUp(ctx *gin.Context) {
 		Status: http.StatusCreated,
 	})
 }
+
+
+func (uc *UserController) FindEmail(ctx *gin.Context){
+	email := ctx.Query("email")
+
+	err := uc.userUseCase.FindEmail(email)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, domain.ErrorResponse{
+			Message: err.Error(),
+			Status: http.StatusInternalServerError,
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, domain.SuccessResponse{
+		Message: "Email already exists",
+		Status: http.StatusOK,
+	})
+}
