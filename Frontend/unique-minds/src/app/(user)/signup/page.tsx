@@ -145,9 +145,9 @@ const SignUp = () => {
                   validate: {
                     emailAvailable: async (fieldValue) => {
                       const response = await fetch(
-                        `http://localhost:3000/api/auth/signup?email=${fieldValue}`
+                        `${apiUrl}/api/email?email=${fieldValue}`
                       );
-                      const data = response.json;
+                      const data = await response.json();
                       return data.length == 0 || "Email already exists.";
                     },
                   },

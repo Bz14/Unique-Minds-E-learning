@@ -12,12 +12,6 @@ type UserUseCase struct {
 	passwordService domain.PasswordServiceInterface
 }
 
-// FindEmail implements domain.UserUseCaseInterface.
-func (u *UserUseCase) FindEmail(email string) error {
-	err := u.userRepo.FindUserByEmail(email)
-	return err
-}
-
 func NewUserUseCase(repo domain.UserRepoInterface, dataValidator domain.ValidatorInterface, password domain.PasswordServiceInterface) *UserUseCase {
 	return &UserUseCase{
 		userRepo:        repo,
@@ -52,5 +46,11 @@ func (u *UserUseCase) SignUp(user domain.User) error {
 	user.Updated_at = time.Now()
 
 	err = u.userRepo.CreateUser(&user)
+	return err
+}
+
+// FindEmail implements domain.UserUseCaseInterface.
+func (u *UserUseCase) FindEmail(email string) error {
+	err := u.userRepo.FindUserByEmail(email)
 	return err
 }

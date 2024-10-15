@@ -68,6 +68,7 @@ func (uc *UserController) FindEmail(ctx *gin.Context){
 	}
 	ctx.JSON(http.StatusOK, domain.SuccessResponse{
 		Message: "Email already exists",
+		Data: []string{},
 		Status: http.StatusOK,
 	})
 }
