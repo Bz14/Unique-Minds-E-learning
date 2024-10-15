@@ -26,7 +26,9 @@ func main() {
 
 	route := router.NewRouter()
 
-	route.Init(server, database, db, config)
+	serverGroup := server.Group("api")
+
+	route.Init(serverGroup, database, db, config)
 
 	server.Run(fmt.Sprintf(":%d", config.ServerPort))
 }
