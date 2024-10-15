@@ -22,7 +22,10 @@ func main() {
 		panic(err)
 	}
 
+	cors := infrastructures.NewCorsMiddleware()
+
 	server := gin.Default()
+	server.Use(cors.CorsMiddleware())
 
 	route := router.NewRouter()
 
