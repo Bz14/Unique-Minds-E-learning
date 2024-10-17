@@ -35,15 +35,14 @@ func (ur *UserRepository) FindUserByEmail(email string) error {
 	return err
 }
 
-func (ur *UserRepository) FindUnverifiedUserByEmail(email string) (domain.User, error)s {
-	var user *domain.User
+func (ur *UserRepository) FindUnverifiedUserByEmail(email string) (domain.User, error) {
+	var user domain.User
 	timeOut := ur.config.TimeOut
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
 	defer cancel()
 	err := ur.unverifiedCollection.FindOne(context, bson.M{"email":email}).Decode(&user)
 	return user, err
 }
-
 
 func (ur *UserRepository) SaveUnverifiedUser(user *domain.User) error{
 	timeOut := ur.config.TimeOut
@@ -78,6 +77,6 @@ func (ur *UserRepository) UpdateUnverifiedUser(email string, currentTime time.Ti
 			"token_expire" : expires,
 		},
 	}
-	err := ur.unverifiedCollection.UpdateOne(context, filter, update)
+	_, err := ur.unverifiedCollection.UpdateOne(context, filter, update)
 	return err
 }

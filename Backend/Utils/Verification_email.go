@@ -18,19 +18,19 @@ func GenerateResetToken()(string, error){
 	return hex.EncodeToString(bytes), nil
 }
 
-func SendVerificationEmail(email string, token string) error {
+func SendVerificationEmail(name string, email string, token string) error {
 	config, err := infrastructures.LoadConfig()
 	if err != nil {
 		return err
 	}
-	resetLink := fmt.Sprintf("%s/api/auth/reset?token=%s", config.SMTPHost, token)
+	verificationLink := fmt.Sprintf("%s/api/auth/reset?token=%s", config.ServerHost, token)
 	body := fmt.Sprintf(`
-	<!DOCTYPE html>
+		<!DOCTYPE html>
 		<html lang="en">
 		<head>
 			<meta charset="UTF-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Password Reset</title>
+			<title>Email Verification</title>
 			<style>
 				body {
 					font-family: Arial, sans-serif;
@@ -54,8 +54,8 @@ func SendVerificationEmail(email string, token string) error {
 					color: #555555;
 				}
 				.button {
-					background-color: #007bff;
-					color: #ffffff;
+					background-color: black;
+					color: white;
 					padding: 10px 15px;
 					text-decoration: none;
 					border-radius: 5px;
@@ -71,21 +71,22 @@ func SendVerificationEmail(email string, token string) error {
 		</head>
 		<body>
 			<div class="container">
-				<h1>Password Reset Request</h1>
-				<p>Hi,</p>
-				<p>You requested a password reset. Click the link below to reset your password:</p>
-				<a href="%s" class="button">Reset Password</a>
-				<p>If you did not request this, please ignore this email.</p>
+				<h1>Email Verification</h1>
+				<p>Hello %s,</p>
+				<p>Thank you for signing up! To complete your registration, please verify your email by clicking the button below:</p>
+				<a href="%s" class="button">Verify Email</a>
+				<p>If you did not sign up for this account, please ignore this email.</p>
 				<div class="footer">
 					<p>Thank you!</p>
 				</div>
 			</div>
 		</body>
-	</html>`, resetLink)
+		</html>`, name, verificationLink)
+
 	m := gomail.NewMessage()
 	m.SetHeader("From", fmt.Sprintf("%s <%s>", "Unique-Minds E-learning", config.EmailFrom))
 	m.SetHeader("To", email)
-	m.SetHeader("Subject", "Password Reset Request")
+	m.SetHeader("Subject", "Email Verification")
 	m.SetBody("text/html", body)
 	d := gomail.NewDialer(config.SMTPHost, config.SMTPPort, config.EmailFrom, config.EmailPassword)
 	if err := d.DialAndSend(m); err != nil {

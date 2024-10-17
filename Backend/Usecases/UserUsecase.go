@@ -53,7 +53,7 @@ func (u *UserUseCase) SignUp(user domain.User) (bool, error) {
 			if err != nil{
 				return false, err
 			}
-			if err := utils.SendVerificationEmail(unverifiedUser.Email, token); err != nil{
+			if err := utils.SendVerificationEmail(unverifiedUser.FullName,unverifiedUser.Email, token); err != nil{
 				return false, err
 			}
 		}
@@ -71,7 +71,7 @@ func (u *UserUseCase) SignUp(user domain.User) (bool, error) {
 		return false, err
 	}
 	
-	if err := utils.SendVerificationEmail(user.Email, token); err != nil{
+	if err := utils.SendVerificationEmail(user.FullName, user.Email, token); err != nil{
 		return false, err
 	}
 	return false, err

@@ -87,7 +87,7 @@ func (uc *UserController) FindEmail(ctx *gin.Context){
 }
 
 
-func (uc *UserController) VerifyEmail(ctx *gin.Context){
-	token := ctx.Query("token")
+// func (uc *UserController) VerifyEmail(ctx *gin.Context){
+// 	token := ctx.Query("token")
 
-}
+// }
