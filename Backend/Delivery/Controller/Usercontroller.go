@@ -87,7 +87,18 @@ func (uc *UserController) FindEmail(ctx *gin.Context){
 }
 
 
-// func (uc *UserController) VerifyEmail(ctx *gin.Context){
-// 	token := ctx.Query("token")
-
-// }
+func (uc *UserController) VerifyEmail(ctx *gin.Context){
+	token := ctx.Query("token")
+	err := uc.userUseCase.VerifyEmail(token)
+	if err != nil{
+		ctx.JSON(http.StatusInternalServerError, domain.ErrorResponse{
+			Message: err.Error(),
+			Status: http.StatusInternalServerError,
+		})
+		return
+	}
+	ctx.JSON(http.StatusCreated, domain.SuccessResponse{
+		Message: "Email verified successfully",
+		Status: http.StatusCreated,
+	})
+}

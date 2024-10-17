@@ -22,6 +22,7 @@ type User struct {
 type UserUseCaseInterface interface {
 	SignUp(User) (bool, error)
 	FindEmail(string) error
+	VerifyEmail(string) error
 }
 
 type UserRepoInterface interface {
@@ -30,4 +31,6 @@ type UserRepoInterface interface {
 	SaveUnverifiedUser(*User) error
 	FindUnverifiedUserByEmail(string) (User, error)
 	UpdateUnverifiedUser(string, time.Time, string, time.Time)error
+	FindUserByToken(string) (User, error)
+	SignUpUser(User) error
 }

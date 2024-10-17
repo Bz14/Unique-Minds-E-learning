@@ -14,16 +14,17 @@ import (
 func NewUserRouter(server *gin.RouterGroup, database *infrastructures.Database, db *mongo.Database, config *infrastructures.Config) {
 	user_collection, err := database.CreateCollection(db, config.UsersCollection)
 	unverified_collection, err := database.CreateCollection(db, config.UnverifiedCollection)
+	client, err := database.Connect(config.DatabaseURL)
 	if err != nil{
 		panic(err)
 	}
 	validator := util.NewValidator()
 	passwordService := util.NewPasswordService()
-	userRepository := repositories.NewUserRepository(user_collection, unverified_collection, *config)
+	userRepository := repositories.NewUserRepository(client, user_collection, unverified_collection, *config)
 	userUseCase := useCase.NewUserUseCase(userRepository, validator, passwordService)
 	userController := controller.NewUserController(userUseCase)
 	authGroup := server.Group("/auth")
 	authGroup.POST("/signup", userController.SignUp)
 	authGroup.GET("/email", userController.FindEmail)
-	// authGroup.POST("/resend", userController.VerifyEmail)
+	authGroup.POST("/resend", userController.VerifyEmail)
 }

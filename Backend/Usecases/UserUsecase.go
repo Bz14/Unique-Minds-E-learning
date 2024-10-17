@@ -82,3 +82,24 @@ func (u *UserUseCase) FindEmail(email string) error {
 	err := u.userRepo.FindUserByEmail(email)
 	return err
 }
+
+
+func (u *UserUseCase) VerifyEmail(token string) error{
+	user, err := u.userRepo.FindUserByToken(token)
+	if err != nil{
+		return err
+	}
+	if time.Now().After(user.VerificationTokenExpire){
+		return errors.New("verification token has expired")
+	}
+	user.IsVerified = true
+	user.Created_at = time.Now()
+	user.Updated_at = time.Now()
+	user.VerificationToken = ""
+	user.VerificationTokenExpire = time.Now()
+	err = u.userRepo.SignUpUser(user)
+	if err != nil{
+		return err
+	}
+	return nil
+}

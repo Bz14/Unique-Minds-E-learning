@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"log"
 	"time"
 	domain "unique-minds/Domain"
 	infrastructures "unique-minds/Infrastructures"
@@ -12,13 +13,15 @@ import (
 )
 
 type UserRepository struct {
+	client *mongo.Client
 	userCollection *mongo.Collection
 	unverifiedCollection *mongo.Collection
 	config infrastructures.Config
 }
 
-func NewUserRepository(collection *mongo.Collection, unverifiedCollection *mongo.Collection, config infrastructures.Config) *UserRepository {
+func NewUserRepository(client *mongo.Client, collection *mongo.Collection, unverifiedCollection *mongo.Collection, config infrastructures.Config) *UserRepository {
 	return &UserRepository{
+		client: client,
 		userCollection: collection,
 		unverifiedCollection: unverifiedCollection,
 		config: config,
@@ -79,4 +82,43 @@ func (ur *UserRepository) UpdateUnverifiedUser(email string, currentTime time.Ti
 	}
 	_, err := ur.unverifiedCollection.UpdateOne(context, filter, update)
 	return err
+}
+
+func (ur *UserRepository) FindUserByToken(token string) (domain.User, error){
+	var user domain.User
+	timeOut := ur.config.TimeOut
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
+	defer cancel()
+
+	filter := bson.M{
+		"verification_token" : token,
+	}
+	err := ur.unverifiedCollection.FindOne(context, filter).Decode(&user)
+	return user, err
+}
+
+func (ur *UserRepository) SignUpUser(user domain.User) error{
+	timeOut := ur.config.TimeOut
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
+	defer cancel()
+	session, err := ur.client.StartSession()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer session.EndSession(context)
+	callback := func(sesCtx mongo.SessionContext) (interface{}, error) {
+        _, err := ur.userCollection.InsertOne(sesCtx, user)
+        if err != nil {
+            return nil, err
+        }
+        _, err = ur.unverifiedCollection.DeleteOne(sesCtx, bson.M{"email": user.Email})
+        if err != nil {
+            return nil, err 
+		}
+        return nil, nil
+    }
+
+	_, err = session.WithTransaction(context, callback)
+	return err
+
 }
