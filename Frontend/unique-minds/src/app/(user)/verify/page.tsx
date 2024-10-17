@@ -1,8 +1,10 @@
-// create a simple page showing that a verification email has been sent to the user email and
-// a button says check email when clicked it opens an email
+"use client";
+import { useSearchParams } from "next/navigation";
 import { MdEmail } from "react-icons/md";
 
 const Verify = () => {
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
   return (
     <div className="flex align-middle justify-center mt-10 mx-auto shadow-lg w-fit max-h-screen bg-white">
       <div className="flex flex-col justify-center align-middle p-10 text-gray-800">
@@ -14,7 +16,7 @@ const Verify = () => {
         </h1>
         <div className="flex flex-col justify-center align-middle mx-auto">
           <h4 className="text-xl text-center">
-            We have sent a verification link to bezueyerusalem@gmail.com
+            We have sent a verification link to <b>{email}</b>
           </h4>
           <p className="text-center p-4">
             Click on the link to complete the verification process. If you

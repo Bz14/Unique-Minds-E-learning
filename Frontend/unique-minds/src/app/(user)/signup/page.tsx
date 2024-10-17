@@ -93,7 +93,7 @@ const SignUp = () => {
         );
       }
       reset();
-      router.push("/verify");
+      router.push(`/verify?email=${encodeURIComponent(data.email)}`);
     } catch (error) {
       console.log("Error", error);
       throw error;
