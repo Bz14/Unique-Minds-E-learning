@@ -105,7 +105,7 @@ const SignUp = () => {
     setValue("userType", type);
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="shadow-2xl rounded-lg overflow-hidden max-w-lg w-full bg-white mt-10 mx-auto">
         <div className="p-10 md:p-16">
           <h1 className="text-3xl font-bold mb-8 text-gray-800 text-center">

@@ -1,15 +1,17 @@
+import Link from "next/link";
+
 const Nav = () => {
   return (
-    <nav>
+    <nav className="bg-customBlue">
       <ul>
         <li>
           <a href="/">Home</a>
         </li>
         <li>
-          <a href="/about">About</a>
+          <Link href="/signup">SignUp</Link>
         </li>
         <li>
-          <a href="/contact">Contact</a>
+          <Link href="/login">Login</Link>
         </li>
       </ul>
     </nav>
