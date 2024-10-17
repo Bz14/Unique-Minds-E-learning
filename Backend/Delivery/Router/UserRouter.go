@@ -25,4 +25,5 @@ func NewUserRouter(server *gin.RouterGroup, database *infrastructures.Database, 
 	authGroup := server.Group("/auth")
 	authGroup.POST("/signup", userController.SignUp)
 	authGroup.GET("/email", userController.FindEmail)
+	authGroup.POST("/resend", userController.VerifyEmail)
 }

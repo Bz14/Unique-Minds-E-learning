@@ -35,6 +35,16 @@ func (ur *UserRepository) FindUserByEmail(email string) error {
 	return err
 }
 
+func (ur *UserRepository) FindUnverifiedUserByEmail(email string) (domain.User, error)s {
+	var user *domain.User
+	timeOut := ur.config.TimeOut
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
+	defer cancel()
+	err := ur.unverifiedCollection.FindOne(context, bson.M{"email":email}).Decode(&user)
+	return user, err
+}
+
+
 func (ur *UserRepository) SaveUnverifiedUser(user *domain.User) error{
 	timeOut := ur.config.TimeOut
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
@@ -49,5 +59,25 @@ func (ur *UserRepository) CreateUser(user *domain.User) error{
 	defer cancel()
 	user.ID = primitive.NewObjectID()
 	_, err := ur.userCollection.InsertOne(context, user)
+	return err
+}
+
+func (ur *UserRepository) UpdateUnverifiedUser(email string, currentTime time.Time, token string, expires time.Time)error{
+	timeOut := ur.config.TimeOut
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
+	defer cancel()
+
+	filter := bson.M{
+		"email" : email,
+	}
+
+	update := bson.M{
+		"$set" : bson.M{
+			"updated_at" : currentTime,
+			"verification_token" : token,
+			"token_expire" : expires,
+		},
+	}
+	err := ur.unverifiedCollection.UpdateOne(context, filter, update)
 	return err
 }

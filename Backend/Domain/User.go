@@ -15,15 +15,19 @@ type User struct {
 	IsVerified bool 			  `json:"is_verified" bson:"is_verified"`
 	Created_at time.Time          `json:"created_at" bson:"created_at"`
 	Updated_at time.Time          `json:"updated_at" bson:"updated_at"`
+	VerificationToken string      `json:"verification_token" bson:"verification_token"`
+	VerificationTokenExpire time.Time `json:"token_expire" bson:"token_expires"`
 }
 
 type UserUseCaseInterface interface {
-	SignUp(user User) error
-	FindEmail(email string) error
+	SignUp(User) (bool, error)
+	FindEmail(string) error
 }
 
 type UserRepoInterface interface {
-	FindUserByEmail(email string) error
-	CreateUser(user *User) error
-	SaveUnverifiedUser(user *User) error
+	FindUserByEmail(string) error
+	CreateUser(*User) error
+	SaveUnverifiedUser(*User) error
+	FindUnverifiedUserByEmail(string) (User, error)
+	UpdateUnverifiedUser(string, time.Time, string, time.Time)error
 }

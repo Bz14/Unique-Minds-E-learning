@@ -18,7 +18,7 @@ func GenerateResetToken()(string, error){
 	return hex.EncodeToString(bytes), nil
 }
 
-func SendResetPasswordEmail(email string, token string) error {
+func SendVerificationEmail(email string, token string) error {
 	config, err := infrastructures.LoadConfig()
 	if err != nil {
 		return err
