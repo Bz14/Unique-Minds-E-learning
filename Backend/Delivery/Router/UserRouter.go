@@ -23,6 +23,7 @@ func NewUserRouter(server *gin.RouterGroup, database *infrastructures.Database, 
 	userRepository := repositories.NewUserRepository(user_collection, *config)
 	userUseCase := useCase.NewUserUseCase(userRepository, validator, passwordService)
 	userController := controller.NewUserController(userUseCase)
-	server.POST("/signup", userController.SignUp)
-	server.GET("/email", userController.FindEmail)
+	authGroup := server.Group("/auth")
+	authGroup.POST("/signup", userController.SignUp)
+	authGroup.GET("/email", userController.FindEmail)
 }

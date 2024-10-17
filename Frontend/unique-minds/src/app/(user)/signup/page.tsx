@@ -79,7 +79,7 @@ const SignUp = () => {
   const onSubmit = async (data: SignUpForm) => {
     console.log(data);
     try {
-      const response = await fetch(`${apiUrl}/api/signup`, {
+      const response = await fetch(`${apiUrl}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -145,7 +145,7 @@ const SignUp = () => {
                   validate: {
                     emailAvailable: async (fieldValue) => {
                       const response = await fetch(
-                        `${apiUrl}/api/email?email=${fieldValue}`
+                        `${apiUrl}/api/auth/email?email=${fieldValue}`
                       );
                       const data = await response.json();
                       return data.length == 0 || "Email already exists.";
