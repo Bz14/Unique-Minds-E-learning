@@ -97,8 +97,13 @@ func (uc *UserController) VerifyEmail(ctx *gin.Context){
 		})
 		return
 	}
-	ctx.JSON(http.StatusCreated, domain.SuccessResponse{
-		Message: "Email verified successfully",
-		Status: http.StatusCreated,
-	})
+	config, err := infrastructures.LoadConfig()
+	if err != nil{
+		ctx.JSON(http.StatusInternalServerError, domain.ErrorResponse{
+			Message: err.Error(),
+			Status: http.StatusInternalServerError,
+		})
+		return
+	}
+	ctx.Redirect(http.StatusFound, config.RedirectLogin)
 }

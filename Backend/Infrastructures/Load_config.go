@@ -21,6 +21,7 @@ type Config struct {
 	ServerHost      string
 	TokenTTlL       int
 	Redirect        string
+	RedirectLogin   string
 }
 
 func LoadConfig() (*Config, error) {
@@ -42,6 +43,7 @@ func LoadConfig() (*Config, error) {
 	tokenTTL := os.Getenv("TOKEN_TTL")
 	unverified := os.Getenv("UNVERIFIED_COLLECTION")
 	redirect := os.Getenv("REDIRECT")
+	redirectLogin := os.Getenv("REDIRECT_LOGIN")
 
 	host, err := strconv.Atoi(smtpPort)
 	if err != nil {
@@ -77,5 +79,6 @@ func LoadConfig() (*Config, error) {
 		TokenTTlL:       ttl,
 		UnverifiedCollection: unverified,
 		Redirect: redirect,
+		RedirectLogin: redirectLogin,
 	}, nil
 }

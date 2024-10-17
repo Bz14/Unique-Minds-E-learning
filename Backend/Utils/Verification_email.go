@@ -54,8 +54,8 @@ func SendVerificationEmail(name string, email string, token string) error {
 					color: #555555;
 				}
 				.button {
-					background-color: black;
-					color: white;
+					background-color: gray;
+					color: black;
 					padding: 10px 15px;
 					text-decoration: none;
 					border-radius: 5px;
