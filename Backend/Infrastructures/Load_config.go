@@ -11,6 +11,7 @@ type Config struct {
 	DatabaseURL     string
 	DatabaseName    string
 	UsersCollection string
+	UnverifiedCollection string
 	ServerPort      int
 	TimeOut 	   int
 	SMTPHost        string
@@ -38,6 +39,7 @@ func LoadConfig() (*Config, error) {
 	emailPassword := os.Getenv("EMAIL_PASSWORD")
 	serverHost := os.Getenv("SERVER_HOST")
 	tokenTTL := os.Getenv("TOKEN_TTL")
+	unverified := os.Getenv("UNVERIFIED_COLLECTION")
 
 	host, err := strconv.Atoi(smtpPort)
 	if err != nil {
@@ -71,5 +73,6 @@ func LoadConfig() (*Config, error) {
 		EmailPassword:   emailPassword,
 		ServerHost:      serverHost,
 		TokenTTlL:       ttl,
+		UnverifiedCollection: unverified,
 	}, nil
 }

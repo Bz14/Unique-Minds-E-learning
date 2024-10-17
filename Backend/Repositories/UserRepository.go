@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 	"time"
 	domain "unique-minds/Domain"
 	infrastructures "unique-minds/Infrastructures"
@@ -14,12 +13,14 @@ import (
 
 type UserRepository struct {
 	userCollection *mongo.Collection
+	unverifiedCollection *mongo.Collection
 	config infrastructures.Config
 }
 
-func NewUserRepository(collection *mongo.Collection, config infrastructures.Config) *UserRepository {
+func NewUserRepository(collection *mongo.Collection, unverifiedCollection *mongo.Collection, config infrastructures.Config) *UserRepository {
 	return &UserRepository{
 		userCollection: collection,
+		unverifiedCollection: unverifiedCollection,
 		config: config,
 	}
 }
@@ -34,12 +35,19 @@ func (ur *UserRepository) FindUserByEmail(email string) error {
 	return err
 }
 
+func (ur *UserRepository) SaveUnverifiedUser(user *domain.User) error{
+	timeOut := ur.config.TimeOut
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
+	defer cancel()
+	user.ID = primitive.NewObjectID()
+	_, err := ur.unverifiedCollection.InsertOne(context, user)
+	return err
+}
 func (ur *UserRepository) CreateUser(user *domain.User) error{
 	timeOut := ur.config.TimeOut
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
 	defer cancel()
 	user.ID = primitive.NewObjectID()
 	_, err := ur.userCollection.InsertOne(context, user)
-	fmt.Println(err)
 	return err
 }

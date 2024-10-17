@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 	domain "unique-minds/Domain"
+	utils "unique-minds/Utils"
 )
 
 type UserUseCase struct {
@@ -45,7 +46,17 @@ func (u *UserUseCase) SignUp(user domain.User) error {
 	user.Created_at = time.Now()
 	user.Updated_at = time.Now()
 
-	err = u.userRepo.CreateUser(&user)
+	err = u.userRepo.SaveUnverifiedUser(&user)
+	if err != nil{
+		return err
+	}
+	token, err := utils.GenerateResetToken()
+	if err != nil{
+		return err
+	}
+	if err := utils.SendResetPasswordEmail(user.Email, token); err != nil{
+		return err
+	}
 	return err
 }
 

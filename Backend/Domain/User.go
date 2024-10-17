@@ -7,7 +7,7 @@ import (
 )
 
 type User struct {
-	FullName  string             `json:"fullName" bson:"fullName" binding:"required"`
+	FullName  string             `json:"fullN ame" bson:"fullName" binding:"required"`
 	ID         primitive.ObjectID `json:"id" bson:"_id" `
 	Email      string             `json:"email" bson:"email" binding:"required, email"`
 	Password   string             `json:"password" bson:"password" binding:"required, min=8 max=20"`
@@ -25,4 +25,5 @@ type UserUseCaseInterface interface {
 type UserRepoInterface interface {
 	FindUserByEmail(email string) error
 	CreateUser(user *User) error
+	SaveUnverifiedUser(user *User) error
 }

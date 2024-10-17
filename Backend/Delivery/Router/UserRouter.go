@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	controller "unique-minds/Delivery/Controller"
 	infrastructures "unique-minds/Infrastructures"
 	repositories "unique-minds/Repositories"
@@ -13,14 +12,14 @@ import (
 )
 
 func NewUserRouter(server *gin.RouterGroup, database *infrastructures.Database, db *mongo.Database, config *infrastructures.Config) {
-	fmt.Println(config)
 	user_collection, err := database.CreateCollection(db, config.UsersCollection)
+	unverified_collection, err := database.CreateCollection(db, config.UnverifiedCollection)
 	if err != nil{
 		panic(err)
 	}
 	validator := util.NewValidator()
 	passwordService := util.NewPasswordService()
-	userRepository := repositories.NewUserRepository(user_collection, *config)
+	userRepository := repositories.NewUserRepository(user_collection, unverified_collection, *config)
 	userUseCase := useCase.NewUserUseCase(userRepository, validator, passwordService)
 	userController := controller.NewUserController(userUseCase)
 	authGroup := server.Group("/auth")
