@@ -13,6 +13,9 @@ const Nav = () => {
         <li>
           <Link href="/login">Login</Link>
         </li>
+        <li>
+          <Link href="/verify">Verify</Link>
+        </li>
       </ul>
     </nav>
   );

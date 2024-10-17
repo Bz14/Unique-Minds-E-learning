@@ -93,7 +93,7 @@ const SignUp = () => {
         );
       }
       reset();
-      router.push("/login");
+      router.push("/verify");
     } catch (error) {
       console.log("Error", error);
       throw error;
