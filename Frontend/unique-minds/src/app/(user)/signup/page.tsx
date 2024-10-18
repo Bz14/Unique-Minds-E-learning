@@ -58,6 +58,8 @@ const SignUp = () => {
     mode: "all",
     resolver: yupResolver(schema),
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { register, handleSubmit, setValue, formState, reset } = form;
   const { errors, isDirty, isValid, isSubmitting, isSubmitSuccessful } =
     formState;
@@ -77,7 +79,7 @@ const SignUp = () => {
   };
 
   const onSubmit = async (data: SignUpForm) => {
-    console.log(data);
+    setLoading(true);
     try {
       const response = await fetch(`${apiUrl}/api/auth/signup`, {
         method: "POST",
@@ -87,6 +89,7 @@ const SignUp = () => {
         body: JSON.stringify(data),
       });
       if (!response.ok) {
+        setError("Signup failed");
         const data = await response.json();
         throw new Error(
           data.message || "An error occurred while creating your account."
@@ -95,8 +98,11 @@ const SignUp = () => {
       reset();
       router.push(`/verify?email=${encodeURIComponent(data.email)}`);
     } catch (error) {
+      setError("Something went wrong");
       console.log("Error", error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -244,13 +250,14 @@ const SignUp = () => {
                 Teacher
               </button>
             </div>
+            <div>{error && <p style={{ color: "red" }}>{error}</p>}</div>
             <div>
               <button
                 type="submit"
                 disabled={(!isDirty && !isValid) || isSubmitting}
                 className="w-full py-3 px-6 bg-customBlue text-white rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-300"
               >
-                Create Account
+                {loading ? "Signing up..." : "Sign Up"}
               </button>
             </div>
             <div className="text-center mt-6">
