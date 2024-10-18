@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Spinner from "@/app/components/spinner/page";
 
 type SignUpForm = {
   fullName: string;
@@ -257,7 +258,7 @@ const SignUp = () => {
                 disabled={(!isDirty && !isValid) || isSubmitting}
                 className="w-full py-3 px-6 bg-customBlue text-white rounded-lg shadow-md hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-300"
               >
-                {loading ? "Signing up..." : "Sign Up"}
+                {loading ? <Spinner /> : "Sign Up"}
               </button>
             </div>
             <div className="text-center mt-6">
