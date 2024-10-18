@@ -12,15 +12,13 @@ import (
 )
 
 type UserRepository struct {
-	session mongo.Session
 	userCollection *mongo.Collection
 	unverifiedCollection *mongo.Collection
 	config infrastructures.Config
 }
 
-func NewUserRepository(session mongo.Session, collection *mongo.Collection, unverifiedCollection *mongo.Collection, config infrastructures.Config) *UserRepository {
+func NewUserRepository(collection *mongo.Collection, unverifiedCollection *mongo.Collection, config infrastructures.Config) *UserRepository {
 	return &UserRepository{
-		session: session,
 		userCollection: collection,
 		unverifiedCollection: unverifiedCollection,
 		config: config,
@@ -97,25 +95,16 @@ func (ur *UserRepository) FindUserByToken(token string) (domain.User, error){
 }
 
 func (ur *UserRepository) SignUpUser(user domain.User) error {
-	timeOut := ur.config.TimeOut
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
-	defer cancel()
-
-	defer ur.session.EndSession(ctx)
-
-	callback := func(sesCtx mongo.SessionContext) (interface{}, error) {
-		_, err := ur.userCollection.InsertOne(sesCtx, user)
-		if err != nil {
-			return nil, err
-		}
-
-		_, err = ur.unverifiedCollection.DeleteOne(sesCtx, bson.M{"email": user.Email})
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, nil
+    timeOut := ur.config.TimeOut
+    ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
+    defer cancel()
+	_, err := ur.unverifiedCollection.DeleteOne(ctx, bson.M{"email": user.Email})
+	if err != nil {
+		return err
 	}
-	_, err := ur.session.WithTransaction(ctx, callback)
-	return err
+	_, err = ur.userCollection.InsertOne(ctx, user)
+	if err != nil {
+		return err
+	}
+	return nil
 }

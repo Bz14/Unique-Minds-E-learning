@@ -20,17 +20,9 @@ func NewUserRouter(server *gin.RouterGroup, database *infrastructures.Database, 
 	if err != nil{	
 		panic(err)
 	}
-	client, err := database.Connect(config.DatabaseURL)
-	if err != nil{
-		panic(err)
-	}
-	session, err := client.StartSession()
-	if err != nil{
-		panic(err)
-	}
 	validator := util.NewValidator()
 	passwordService := util.NewPasswordService()
-	userRepository := repositories.NewUserRepository(session, user_collection, unverified_collection, *config)
+	userRepository := repositories.NewUserRepository(user_collection, unverified_collection, *config)
 	userUseCase := useCase.NewUserUseCase(userRepository, validator, passwordService)
 	userController := controller.NewUserController(userUseCase)
 	authGroup := server.Group("/auth")
