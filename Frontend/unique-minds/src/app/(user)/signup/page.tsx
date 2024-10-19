@@ -264,7 +264,7 @@ const SignUp = () => {
             <div className="text-center mt-6">
               <h3 className="text-sm">
                 Already have an account?{" "}
-                <Link href="/user/login">
+                <Link href="/login">
                   <span className="text-indigo-600 hover:text-indigo-500 font-semibold">
                     Log In
                   </span>
@@ -288,7 +288,7 @@ const SignUp = () => {
                   <span className="mt-1 mr-2">
                     <FcGoogle />
                   </span>
-                  <span>Sign Up with Google</span>
+                  <span>Sign In with Google</span>
                 </div>
               </button>
             </div>
