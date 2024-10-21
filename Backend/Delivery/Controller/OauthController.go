@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	domain "unique-minds/Domain"
@@ -26,7 +27,6 @@ func NewOauthController(useCase domain.OauthUseCaseInterface, config infrastruct
 	}
 }
 
-
 func (oc *OauthController) GoogleAuth(ctx *gin.Context){
 	URL, isSuccess := oc.oauthUseCase.GoogleAuth()
 	if isSuccess {
@@ -39,6 +39,7 @@ func (oc *OauthController) GoogleAuth(ctx *gin.Context){
 			return
 		}
 		ctx.Redirect(http.StatusTemporaryRedirect, url)
+		return
 	}else{
 		ctx.JSON(http.StatusInternalServerError, domain.ErrorResponse{
 			Message: "Failed to get URL",
@@ -51,6 +52,7 @@ func (oc *OauthController) GoogleAuth(ctx *gin.Context){
 
 func (oc *OauthController) GoogleCallback(ctx *gin.Context){
 	state := ctx.Query("state")
+	fmt.Println(state)
 
 	if strings.ToLower(state) != oc.config.State {
 		ctx.JSON(http.StatusBadRequest, domain.ErrorResponse{
@@ -61,6 +63,7 @@ func (oc *OauthController) GoogleCallback(ctx *gin.Context){
 	}
 
 	code := ctx.Query("code")
+	fmt.Println(code)
 	if code == "" {
 		ctx.JSON(http.StatusBadRequest, domain.ErrorResponse{
 			Message: "Code not found",
@@ -68,7 +71,6 @@ func (oc *OauthController) GoogleCallback(ctx *gin.Context){
 		})
 		return
 	}
-
 	err , isNew := oc.oauthUseCase.GoogleCallback(code)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, domain.ErrorResponse{
