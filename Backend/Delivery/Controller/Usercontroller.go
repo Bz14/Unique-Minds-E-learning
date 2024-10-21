@@ -107,12 +107,3 @@ func (uc *UserController) VerifyEmail(ctx *gin.Context){
 	}
 	ctx.Redirect(http.StatusFound, config.RedirectLogin)
 }
-
-
-func (uc *UserController) GoogleAuth(ctx *gin.Context){
-	response := uc.userUseCase.GoogleAuth()
-}
-
-func (uc *UserController) GoogleCallback(ctx *gin.Context){
-
-}

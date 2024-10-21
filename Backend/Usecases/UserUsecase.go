@@ -62,6 +62,7 @@ func (u *UserUseCase) SignUp(user domain.User) (bool, error) {
 
 	user.Password = password
 	user.IsVerified = false
+	user.GoogleID = ""
 	user.Created_at = time.Now()
 	user.Updated_at = time.Now()
 	user.VerificationToken = token

@@ -25,6 +25,8 @@ type Config struct {
 	ClientId 	  string
 	ClientSecret 	  string
 	RedirectUrl 	  string
+	State 		 string
+	RoleRedirect		 string
 }
 
 func LoadConfig() (*Config, error) {
@@ -50,6 +52,8 @@ func LoadConfig() (*Config, error) {
 	clientId := os.Getenv("CLIENT_ID")
 	clientSecret := os.Getenv("CLIENT_SECRET")
 	redirectUrl := os.Getenv("REDIRECT_URL")
+	state := os.Getenv("STATE")
+	role := os.Getenv("ROLE")
 
 	host, err := strconv.Atoi(smtpPort)
 	if err != nil {
@@ -89,5 +93,7 @@ func LoadConfig() (*Config, error) {
 		ClientId: clientId,
 		ClientSecret: clientSecret,
 		RedirectUrl: redirectUrl,
+		State: state,
+		RoleRedirect: role,
 	}, nil
 }
