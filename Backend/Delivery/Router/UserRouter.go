@@ -29,7 +29,7 @@ func NewUserRouter(server *gin.RouterGroup, database *infrastructures.Database, 
 
 	oauthUseCase := useCase.NewOauthUseCase(userRepository, *config, oauthService)
 	userController := controller.NewUserController(userUseCase)
-	oauthController := controller.NewOauthController(oauthUseCase)
+	oauthController := controller.NewOauthController(oauthUseCase, *config)
 	
 	authGroup := server.Group("/auth")
 	authGroup.POST("/signup", userController.SignUp)

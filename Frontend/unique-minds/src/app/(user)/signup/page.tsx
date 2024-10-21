@@ -107,6 +107,23 @@ const SignUp = () => {
     }
   };
 
+  const handleSignUpWithGoogle = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/auth/google`);
+      if (!response.ok) {
+        setError("Google Signup failed");
+        const data = await response.json();
+        throw new Error(
+          data.message || "An error occurred while creating your account."
+        );
+      }
+    } catch (error) {
+      setError("Something went wrong");
+      console.log("Error", error);
+      throw error;
+    }
+  };
+
   const handleUserType = (type: string) => {
     setUserType(type);
     setValue("userType", type);
@@ -288,7 +305,9 @@ const SignUp = () => {
                   <span className="mt-1 mr-2">
                     <FcGoogle />
                   </span>
-                  <span>Sign In with Google</span>
+                  <button onClick={handleSignUpWithGoogle}>
+                    Sign In with Google
+                  </button>
                 </div>
               </button>
             </div>
