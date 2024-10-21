@@ -17,6 +17,7 @@ type User struct {
 	Updated_at time.Time          `json:"updated_at" bson:"updated_at"`
 	VerificationToken string      `json:"verification_token" bson:"verification_token"`
 	VerificationTokenExpire time.Time `json:"token_expire" bson:"token_expires"`
+	GoogleID   string             `bson:"googleId" json:"googleId"`
 }
 
 type UserUseCaseInterface interface {

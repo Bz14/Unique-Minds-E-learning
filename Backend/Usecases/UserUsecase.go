@@ -83,7 +83,6 @@ func (u *UserUseCase) FindEmail(email string) error {
 	return err
 }
 
-
 func (u *UserUseCase) VerifyEmail(token string) error{
 	user, err := u.userRepo.FindUserByToken(token)
 	if err != nil{
@@ -103,3 +102,5 @@ func (u *UserUseCase) VerifyEmail(token string) error{
 	}
 	return nil
 }
+
+
