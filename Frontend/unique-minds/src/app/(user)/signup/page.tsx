@@ -46,6 +46,7 @@ const schema = yup.object({
     .required("Please confirm your password."),
   userType: yup.string().required("User type is required."),
 });
+
 const SignUp = () => {
   const apiUrl = process.env.NEXT_PUBLIC_API;
   const form = useForm<SignUpForm>({

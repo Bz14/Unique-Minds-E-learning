@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 	domain "unique-minds/Domain"
@@ -52,7 +51,6 @@ func (oc *OauthController) GoogleAuth(ctx *gin.Context){
 
 func (oc *OauthController) GoogleCallback(ctx *gin.Context){
 	state := ctx.Query("state")
-	fmt.Println(state)
 
 	if strings.ToLower(state) != oc.config.State {
 		ctx.JSON(http.StatusBadRequest, domain.ErrorResponse{
@@ -63,7 +61,6 @@ func (oc *OauthController) GoogleCallback(ctx *gin.Context){
 	}
 
 	code := ctx.Query("code")
-	fmt.Println(code)
 	if code == "" {
 		ctx.JSON(http.StatusBadRequest, domain.ErrorResponse{
 			Message: "Code not found",
@@ -82,6 +79,8 @@ func (oc *OauthController) GoogleCallback(ctx *gin.Context){
 	if isNew{
 		ctx.Redirect(http.StatusTemporaryRedirect, oc.config.RoleRedirect)
 		return
+	}else{
+		
 	}
 	ctx.JSON(http.StatusOK, domain.SuccessResponse{
 		Message: "User already exists",
