@@ -22,8 +22,9 @@ func NewUserRouter(server *gin.RouterGroup, database *infrastructures.Database, 
 	}
 	validator := util.NewValidator()
 	passwordService := util.NewPasswordService()
+	tokenService := util.NewTokenService(*config)
 	userRepository := repositories.NewUserRepository(user_collection, unverified_collection, *config)
-	userUseCase := useCase.NewUserUseCase(userRepository, validator, passwordService)
+	userUseCase := useCase.NewUserUseCase(userRepository, validator, passwordService, tokenService)
 	
 	oauthService := infrastructures.NewOauthConfig(config)
 
@@ -37,4 +38,5 @@ func NewUserRouter(server *gin.RouterGroup, database *infrastructures.Database, 
 	authGroup.GET("/reset", userController.VerifyEmail)
 	authGroup.GET("/google", oauthController.GoogleAuth)
 	authGroup.GET("/callback", oauthController.GoogleCallback)
+	authGroup.POST("/login", userController.Login)
 }

@@ -24,10 +24,11 @@ type UserUseCaseInterface interface {
 	SignUp(User) (bool, error)
 	FindEmail(string) error
 	VerifyEmail(string) error
+	Login(loginRequest LoginRequest)(LoginResponse, error)
 }
 
 type UserRepoInterface interface {
-	FindUserByEmail(string) error
+	FindUserByEmail(string) (*User, error)
 	CreateUser(*User) error
 	SaveUnverifiedUser(*User) error
 	FindUnverifiedUserByEmail(string) (User, error)

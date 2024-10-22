@@ -14,5 +14,6 @@ func (ps *PasswordService) HashPassword(password string) (string, error) {
 }
 
 func (ps *PasswordService) UnHashPassword(hashedPassword string, password string) error {
-	return nil
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err
 }

@@ -11,13 +11,15 @@ type UserUseCase struct {
 	userRepo        domain.UserRepoInterface
 	validator       domain.ValidatorInterface
 	passwordService domain.PasswordServiceInterface
+	tokenService    domain.TokenServiceInterface
 }
 
-func NewUserUseCase(repo domain.UserRepoInterface, dataValidator domain.ValidatorInterface, password domain.PasswordServiceInterface) *UserUseCase {
+func NewUserUseCase(repo domain.UserRepoInterface, dataValidator domain.ValidatorInterface, password domain.PasswordServiceInterface, tokenService domain.TokenServiceInterface) *UserUseCase {
 	return &UserUseCase{
 		userRepo:        repo,
 		validator:       dataValidator,
 		passwordService: password,
+		tokenService: tokenService,
 	}
 }
 
@@ -33,7 +35,7 @@ func (u *UserUseCase) SignUp(user domain.User) (bool, error) {
 		return false, err
 	}
 
-	err := u.userRepo.FindUserByEmail(user.Email)
+	_, err := u.userRepo.FindUserByEmail(user.Email)
 	if err == nil {
 		return false, errors.New("email already exists")
 	}
@@ -104,4 +106,42 @@ func (u *UserUseCase) VerifyEmail(token string) error{
 	return nil
 }
 
+func (u *UserUseCase) Login(loginRequest domain.LoginRequest)(domain.LoginResponse, error){
+	if err := u.validator.ValidateEmail(loginRequest.Email); err != nil {
+		return domain.LoginResponse{}, err
+	}
+	if err := u.validator.ValidatePassword(loginRequest.Password); err != nil {
+		return domain.LoginResponse{}, err
+	}
+	user, err := u.userRepo.FindUserByEmail(loginRequest.Email)
+	if err != nil {
+		return domain.LoginResponse{}, errors.New("user not signed up")
+	}
+	if user.IsVerified == false {
+		return domain.LoginResponse{}, errors.New("user not verified")
+	}
+
+	if user.GoogleID != ""{
+		return domain.LoginResponse{}, errors.New("user signed up with google. Try using google login")
+	}
+	err = u.passwordService.UnHashPassword(user.Password, loginRequest.Password)
+	if err != nil{
+		return domain.LoginResponse{}, errors.New("incorrect password")
+	}
+
+	accessToken, err := u.tokenService.GenerateAccessToken(user)
+	if err != nil{
+		return domain.LoginResponse{}, err
+	}
+
+	refreshToken, err := u.tokenService.GenerateResetToken(user)
+	if err != nil{
+		return domain.LoginResponse{}, err
+	}
+	return domain.LoginResponse{
+		AccessToken: accessToken, 
+		RefreshToken: refreshToken,
+	},nil
+
+}
 

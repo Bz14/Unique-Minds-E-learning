@@ -27,6 +27,8 @@ type Config struct {
 	RedirectUrl 	  string
 	State 		 string
 	RoleRedirect		 string
+	Secret          string
+	Expiry 		int
 }
 
 func LoadConfig() (*Config, error) {
@@ -54,6 +56,14 @@ func LoadConfig() (*Config, error) {
 	redirectUrl := os.Getenv("REDIRECT_URL")
 	state := os.Getenv("STATE")
 	role := os.Getenv("ROLE")
+	secret := os.Getenv("SECRET")
+	expiry := os.Getenv("EXPIRY")
+
+	exp, err := strconv.Atoi(expiry)
+	if err != nil {
+		return nil, errors.New("invalid expiry value")
+
+	}
 
 	host, err := strconv.Atoi(smtpPort)
 	if err != nil {
@@ -95,5 +105,7 @@ func LoadConfig() (*Config, error) {
 		RedirectUrl: redirectUrl,
 		State: state,
 		RoleRedirect: role,
+		Secret: secret,
+		Expiry: exp,
 	}, nil
 }

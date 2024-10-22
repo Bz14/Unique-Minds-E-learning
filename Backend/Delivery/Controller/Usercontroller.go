@@ -107,3 +107,26 @@ func (uc *UserController) VerifyEmail(ctx *gin.Context){
 	}
 	ctx.Redirect(http.StatusFound, config.RedirectLogin)
 }
+
+
+func (uc *UserController) Login(ctx *gin.Context){
+	var loginRequest domain.LoginRequest
+
+	if err := ctx.ShouldBindJSON(&loginRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, domain.ErrorResponse{
+			Message: err.Error(),
+			Status: http.StatusBadRequest,
+		})
+		return
+	}
+
+	loginResponse, err := uc.userUseCase.Login(loginRequest)
+	if err != nil{
+		ctx.JSON(http.StatusInternalServerError, domain.ErrorResponse{
+			Message: err.Error(),
+			Status: http.StatusInternalServerError,
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, loginResponse)
+}

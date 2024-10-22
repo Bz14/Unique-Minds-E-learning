@@ -26,13 +26,13 @@ func NewUserRepository(collection *mongo.Collection, unverifiedCollection *mongo
 }
 
 
-func (ur *UserRepository) FindUserByEmail(email string) error {
+func (ur *UserRepository) FindUserByEmail(email string)(*domain.User, error) {
 	var user *domain.User
 	timeOut := ur.config.TimeOut
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
 	defer cancel()
 	err := ur.userCollection.FindOne(context, bson.M{"email":email}).Decode(&user)
-	return err
+	return user, err
 }
 
 func (ur *UserRepository) FindUnverifiedUserByEmail(email string) (domain.User, error) {
@@ -108,3 +108,5 @@ func (ur *UserRepository) SignUpUser(user domain.User) error {
 	}
 	return nil
 }
+
+
