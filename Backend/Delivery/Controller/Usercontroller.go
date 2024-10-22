@@ -16,7 +16,7 @@ type UserController struct {
 
 type UserControllerInterface interface{}
 
-func NewUserController(useCase domain.UserUseCaseInterface, config infrastructures.Config) *UserController {
+func NewUserController(useCase domain.UserUseCaseInterface, config *infrastructures.Config) *UserController {
 	return &UserController{
 		userUseCase: useCase,
 		config: config,

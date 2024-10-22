@@ -50,6 +50,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [token, setToken] = useState("");
 
   const { handleSubmit, register, formState, reset } = form;
   const { errors, isDirty, isValid, isSubmitting, isSubmitSuccessful } =
@@ -88,7 +89,7 @@ const Login = () => {
         );
       }
       const data = await response.json();
-      console.log("Data", data);
+      setToken(data.access_token);
       reset();
       router.push(`/`);
     } catch (error) {
