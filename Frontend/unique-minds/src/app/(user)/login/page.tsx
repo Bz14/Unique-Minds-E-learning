@@ -4,6 +4,9 @@ import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FieldErrors, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import Spinner from "@/app/components/spinner/page";
+import { FcGoogle } from "react-icons/fc";
 
 type LoginForm = {
   email: string;
@@ -43,13 +46,15 @@ const Login = () => {
     mode: "all",
     resolver: yupResolver(schema),
   });
+  const apiUrl = process.env.NEXT_PUBLIC_API;
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { control, handleSubmit, register, setValue, formState, reset } = form;
+  const { handleSubmit, register, formState, reset } = form;
   const { errors, isDirty, isValid, isSubmitting, isSubmitSuccessful } =
     formState;
+  const router = useRouter();
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -61,10 +66,15 @@ const Login = () => {
     console.log("Errors", errors);
   };
 
-  const onSubmit = async (data: SignUpForm) => {
+  const handleLoginWithGoogle = async () => {
+    window.location.href = `${apiUrl}/api/auth/google`;
+  };
+
+  const onSubmit = async (data: LoginForm) => {
     setLoading(true);
+    console.log("Data", data);
     try {
-      const response = await fetch(`${apiUrl}/api/auth/signup`, {
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,14 +82,14 @@ const Login = () => {
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        setError("Signup failed");
+        setError("Login failed");
         const data = await response.json();
         throw new Error(
-          data.message || "An error occurred while creating your account."
+          data.message || "An error occurred while logging you in."
         );
       }
       reset();
-      router.push(`/verify?email=${encodeURIComponent(data.email)}`);
+      router.push(`/`);
     } catch (error) {
       setError("Something went wrong");
       console.log("Error", error);
@@ -128,7 +138,7 @@ const Login = () => {
               <input
                 {...register("password")}
                 type={passwordVisible ? "password" : "text"}
-                placeholder="Create a password"
+                placeholder="Enter your password"
                 className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
               />
               <div
@@ -167,8 +177,32 @@ const Login = () => {
               <button
                 type="submit"
                 className="w-full bg-customBlue text-white p-3 rounded-lg font-semibold hover:bg-gray-400"
+                disabled={(!isDirty && !isValid) || isSubmitting}
               >
-                Login
+                {loading ? <Spinner /> : "Login"}
+              </button>
+              <div>{error && <p style={{ color: "red" }}>{error}</p>}</div>
+            </div>
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-white px-2 text-gray-500">Or</span>
+              </div>
+            </div>
+            <div>
+              <button
+                onClick={handleLoginWithGoogle}
+                type="button"
+                className="w-full py-3 px-6 bg-white text-black rounded-lg shadow-md border border-gray-300 hover:bg-gray-200 transition ease-in-out duration-300"
+              >
+                <div className="flex align-center justify-center">
+                  <span className="mt-1 mr-2">
+                    <FcGoogle />
+                  </span>
+                  <span>LogIn with Google</span>
+                </div>
               </button>
             </div>
           </form>
