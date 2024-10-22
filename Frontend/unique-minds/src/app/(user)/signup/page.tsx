@@ -91,18 +91,17 @@ const SignUp = () => {
         body: JSON.stringify(data),
       });
       if (!response.ok) {
-        setError("Signup failed");
         const data = await response.json();
-        throw new Error(
+        setError(
           data.message || "An error occurred while creating your account."
         );
+        return;
       }
       reset();
       router.push(`/verify?email=${encodeURIComponent(data.email)}`);
     } catch (error) {
       setError("Something went wrong");
       console.log("Error", error);
-      throw error;
     } finally {
       setLoading(false);
     }
@@ -156,11 +155,17 @@ const SignUp = () => {
                 {...register("email", {
                   validate: {
                     emailAvailable: async (fieldValue) => {
-                      const response = await fetch(
-                        `${apiUrl}/api/auth/email?email=${fieldValue}`
-                      );
-                      const data = await response.json();
-                      return data.length == 0 || "Email already exists.";
+                      try {
+                        const response = await fetch(
+                          `${apiUrl}/api/auth/email?email=${fieldValue}`
+                        );
+                        const data = await response.json();
+                        console.log("API Response:", data);
+                        return data.length === 0 || "Email already exists.";
+                      } catch (error) {
+                        console.error("Error during fetch:", error);
+                        return "Error validating email";
+                      }
                     },
                   },
                 })}

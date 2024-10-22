@@ -70,16 +70,15 @@ const Login = () => {
     window.location.href = `${apiUrl}/api/auth/google`;
   };
 
-  const onSubmit = async (data: LoginForm) => {
+  const onSubmit = async (loginData: LoginForm) => {
     setLoading(true);
-    console.log("Data", data);
     try {
       const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(loginData),
       });
       if (!response.ok) {
         setError("Login failed");
@@ -88,6 +87,8 @@ const Login = () => {
           data.message || "An error occurred while logging you in."
         );
       }
+      const data = await response.json();
+      console.log("Data", data);
       reset();
       router.push(`/`);
     } catch (error) {

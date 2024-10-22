@@ -28,7 +28,10 @@ type Config struct {
 	State 		 string
 	RoleRedirect		 string
 	Secret          string
-	Expiry 		int
+	AccessTokenExpire int
+	RefreshTokenExpire int
+	CookieDomain string
+	Environment    bool
 }
 
 func LoadConfig() (*Config, error) {
@@ -57,12 +60,25 @@ func LoadConfig() (*Config, error) {
 	state := os.Getenv("STATE")
 	role := os.Getenv("ROLE")
 	secret := os.Getenv("SECRET")
-	expiry := os.Getenv("EXPIRY")
+	accessTokenExpiry := os.Getenv("ACCESS_TOKEN_EXPIRES_IN")
+	refreshTokenExpiry := os.Getenv("REFRESH_TOKEN_EXPIRES_IN")
+	cookieDomain := os.Getenv("COOKIE_DOMAIN")
+	env := os.Getenv("ENVIRONMENT")
 
-	exp, err := strconv.Atoi(expiry)
+	prodEnv := false
+	if env == "production" {
+		prodEnv = true
+	}
+
+
+	accessExp, err := strconv.Atoi(accessTokenExpiry)
 	if err != nil {
 		return nil, errors.New("invalid expiry value")
 
+	}
+	refreshExp, err := strconv.Atoi(refreshTokenExpiry)
+	if err != nil {
+		return nil, errors.New("invalid expiry value")
 	}
 
 	host, err := strconv.Atoi(smtpPort)
@@ -106,6 +122,9 @@ func LoadConfig() (*Config, error) {
 		State: state,
 		RoleRedirect: role,
 		Secret: secret,
-		Expiry: exp,
+		AccessTokenExpire: accessExp,
+		RefreshTokenExpire: refreshExp,
+		CookieDomain: cookieDomain,
+		Environment: prodEnv,
 	}, nil
 }

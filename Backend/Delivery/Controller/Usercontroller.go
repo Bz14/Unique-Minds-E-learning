@@ -11,13 +11,15 @@ import (
 
 type UserController struct {
 	userUseCase domain.UserUseCaseInterface
+	config *infrastructures.Config
 }
 
 type UserControllerInterface interface{}
 
-func NewUserController(useCase domain.UserUseCaseInterface) *UserController {
+func NewUserController(useCase domain.UserUseCaseInterface, config infrastructures.Config) *UserController {
 	return &UserController{
 		userUseCase: useCase,
+		config: config,
 	}
 }
 
@@ -128,5 +130,11 @@ func (uc *UserController) Login(ctx *gin.Context){
 		})
 		return
 	}
-	ctx.JSON(http.StatusOK, loginResponse)
+	ctx.SetCookie("refreshToken", loginResponse.RefreshToken, 3600*24*7, "/", uc.config.CookieDomain, uc.config.Environment, true)
+
+	ctx.JSON(http.StatusOK, domain.SuccessResponse{
+		Message: "Login successful",
+		Data: loginResponse.AccessToken,
+		Status: http.StatusOK,
+	})
 }

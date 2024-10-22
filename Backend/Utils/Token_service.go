@@ -20,7 +20,7 @@ func NewTokenService(config infrastructures.Config) *TokenService {
 
 
 func (ts *TokenService) GenerateAccessToken(user *domain.User)(string, error){
-	exp := time.Now().Add(time.Hour * time.Duration(ts.config.Expiry))
+	exp := time.Now().Add(time.Hour * time.Duration(ts.config.AccessTokenExpire))
 	claims := &domain.JwtCustomClaims{
 		ID: user.ID.Hex(),
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -31,7 +31,7 @@ func (ts *TokenService) GenerateAccessToken(user *domain.User)(string, error){
 }
 
 func (ts *TokenService) GenerateResetToken(user *domain.User)(string, error){
-	exp := time.Now().Add(time.Hour * time.Duration(ts.config.Expiry))
+	exp := time.Now().Add(time.Hour * time.Duration(ts.config.RefreshTokenExpire))
 	claims := &domain.JwtCustomClaims{
 		ID: user.ID.Hex(),
 		RegisteredClaims: jwt.RegisteredClaims{

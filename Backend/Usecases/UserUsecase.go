@@ -117,7 +117,7 @@ func (u *UserUseCase) Login(loginRequest domain.LoginRequest)(domain.LoginRespon
 	if err != nil {
 		return domain.LoginResponse{}, errors.New("user not signed up")
 	}
-	if user.IsVerified == false {
+	if !user.IsVerified{
 		return domain.LoginResponse{}, errors.New("user not verified")
 	}
 
