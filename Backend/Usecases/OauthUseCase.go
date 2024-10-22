@@ -70,7 +70,7 @@ func (o *OauthUseCase) GoogleCallback(code string) (*domain.ErrorResponse, bool)
 			Status: 500,
 		}, false
 	}
-	err = o.userRepo.FindUserByEmail(userinfo.Email)
+	_, err = o.userRepo.FindUserByEmail(userinfo.Email)
 	if err != nil {
 		var newUser domain.User
 		newUser.Email = userinfo.Email

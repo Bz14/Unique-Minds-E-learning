@@ -2,8 +2,8 @@ package utils
 
 import (
 	"time"
+	domain "unique-minds/Domain"
 	infrastructures "unique-minds/Infrastructures"
-	domain "unique-minds/domain"
 
 	"github.com/golang-jwt/jwt/v4"
 )

@@ -82,7 +82,7 @@ func (u *UserUseCase) SignUp(user domain.User) (bool, error) {
 
 // FindEmail implements domain.UserUseCaseInterface.
 func (u *UserUseCase) FindEmail(email string) error {
-	err := u.userRepo.FindUserByEmail(email)
+	_, err := u.userRepo.FindUserByEmail(email)
 	return err
 }
 
