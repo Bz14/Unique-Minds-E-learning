@@ -51,6 +51,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [token, setToken] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { handleSubmit, register, formState, reset } = form;
   const { errors, isDirty, isValid, isSubmitting, isSubmitSuccessful } =
@@ -89,7 +90,10 @@ const Login = () => {
         );
       }
       const data = await response.json();
-      setToken(data.access_token);
+      setToken(data.data);
+      if (rememberMe) {
+        localStorage.setItem("access_token", data.data);
+      }
       reset();
       router.push(`/`);
     } catch (error) {
@@ -163,6 +167,7 @@ const Login = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   type="checkbox"
                   id="remember"
                   className="rounded border-gray-300 text-customBlue shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"

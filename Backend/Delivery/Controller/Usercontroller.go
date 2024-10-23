@@ -11,12 +11,12 @@ import (
 
 type UserController struct {
 	userUseCase domain.UserUseCaseInterface
-	config *infrastructures.Config
+	config infrastructures.Config
 }
 
 type UserControllerInterface interface{}
 
-func NewUserController(useCase domain.UserUseCaseInterface, config *infrastructures.Config) *UserController {
+func NewUserController(useCase domain.UserUseCaseInterface, config infrastructures.Config) *UserController {
 	return &UserController{
 		userUseCase: useCase,
 		config: config,
