@@ -70,7 +70,7 @@ func (o *OauthUseCase) GoogleCallback(code string) (*domain.ErrorResponse, bool)
 			Status: 500,
 		}, false
 	}
-	_, err = o.userRepo.FindUserByEmail(userinfo.Email)
+	existing_user, err := o.userRepo.FindUserByEmail(userinfo.Email)
 	if err != nil {
 		var newUser domain.User
 		newUser.Email = userinfo.Email
@@ -88,6 +88,12 @@ func (o *OauthUseCase) GoogleCallback(code string) (*domain.ErrorResponse, bool)
 			}, false
 		}
 		return nil, true
+	}
+	if existing_user.GoogleID == ""{
+		return &domain.ErrorResponse{
+			Message: "User not signed up with google",
+			Status: 200,
+		}, false
 	}
 
 	return nil, false
