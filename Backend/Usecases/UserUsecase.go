@@ -145,3 +145,21 @@ func (u *UserUseCase) Login(loginRequest domain.LoginRequest)(domain.LoginRespon
 
 }
 
+func (u *UserUseCase) UpdateRole(email string, role string) error{
+	if err := u.validator.ValidateEmail(email); err != nil {
+		return err
+	}
+	if err := u.validator.ValidateRole(role); err != nil {
+		return err
+	}
+	_, err := u.userRepo.FindUserByEmail(email)
+	if err != nil {
+		return errors.New("user not signed up")
+	}
+	err = u.userRepo.UpdateRole(email, role)
+	if err != nil{
+		return err
+	}
+	return nil
+}
+

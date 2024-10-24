@@ -138,3 +138,20 @@ func (uc *UserController) Login(ctx *gin.Context){
 		Status: http.StatusOK,
 	})
 }
+
+func (uc *UserController) UpdateRole(ctx *gin.Context){
+	email := ctx.Query("email")
+	role := ctx.Query("role")
+	err := uc.userUseCase.UpdateRole(email, role)
+	if err != nil{
+		ctx.JSON(http.StatusInternalServerError, domain.ErrorResponse{
+			Message: err.Error(),
+			Status: http.StatusInternalServerError,
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, domain.SuccessResponse{
+		Message: "Role updated successfully",
+		Status: http.StatusOK,
+	})
+}

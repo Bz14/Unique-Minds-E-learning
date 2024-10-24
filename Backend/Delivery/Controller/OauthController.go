@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	domain "unique-minds/Domain"
@@ -68,7 +69,7 @@ func (oc *OauthController) GoogleCallback(ctx *gin.Context){
 		})
 		return
 	}
-	err , isNew := oc.oauthUseCase.GoogleCallback(code)
+	user, err , isNew := oc.oauthUseCase.GoogleCallback(code)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, domain.ErrorResponse{
 			Message: err.Message,
@@ -77,7 +78,8 @@ func (oc *OauthController) GoogleCallback(ctx *gin.Context){
 		return
 	}
 	if isNew{
-		ctx.Redirect(http.StatusTemporaryRedirect, oc.config.RoleRedirect)
+		redirectUrl := fmt.Sprintf("%s?email=%s", oc.config.RoleRedirect,user.Email)
+		ctx.Redirect(http.StatusTemporaryRedirect, redirectUrl)
 		return
 	}
 	ctx.JSON(http.StatusOK, domain.SuccessResponse{

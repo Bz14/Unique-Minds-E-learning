@@ -25,6 +25,7 @@ type UserUseCaseInterface interface {
 	FindEmail(string) error
 	VerifyEmail(string) error
 	Login(loginRequest LoginRequest)(LoginResponse, error)
+	UpdateRole(email string, role string) error
 }
 
 type UserRepoInterface interface {
@@ -35,4 +36,5 @@ type UserRepoInterface interface {
 	UpdateUnverifiedUser(string, time.Time, string, time.Time)error
 	FindUserByToken(string) (User, error)
 	SignUpUser(User) error
+	UpdateRole(email string, role string) error
 }

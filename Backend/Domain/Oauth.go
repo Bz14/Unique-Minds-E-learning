@@ -14,5 +14,5 @@ type OauthConfigInterface interface {
 
 type OauthUseCaseInterface interface {
 	GoogleAuth() (interface{}, bool)
-	GoogleCallback(code string) (*ErrorResponse, bool)
+	GoogleCallback(code string) (User, *ErrorResponse, bool)
 }

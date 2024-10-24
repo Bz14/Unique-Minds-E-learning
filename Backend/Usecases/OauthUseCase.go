@@ -37,10 +37,10 @@ func (o *OauthUseCase) GoogleAuth() (interface{}, bool){
 	return url, true
 }
 
-func (o *OauthUseCase) GoogleCallback(code string) (*domain.ErrorResponse, bool){
+func (o *OauthUseCase) GoogleCallback(code string) (domain.User, *domain.ErrorResponse, bool){
 	credentials, err := o.oauthService.InitialConfig()
 	if err != nil{
-		return &domain.ErrorResponse{
+		return domain.User{},&domain.ErrorResponse{
 			Message: err.Error(),
 			Status: 500,
 		}, false
@@ -50,7 +50,7 @@ func (o *OauthUseCase) GoogleCallback(code string) (*domain.ErrorResponse, bool)
 	defer cancel()
 	token, err := credentials.Exchange(ctx, code)
 	if err != nil {
-		return &domain.ErrorResponse{
+		return domain.User{}, &domain.ErrorResponse{
 			Message: err.Error(),
 			Status: 500,
 		}, false
@@ -58,14 +58,14 @@ func (o *OauthUseCase) GoogleCallback(code string) (*domain.ErrorResponse, bool)
 	client := credentials.Client(ctx, token)
 	oauth2Service, err :=  oauth2Service.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
-		return &domain.ErrorResponse{
+		return domain.User{}, &domain.ErrorResponse{
 			Message: err.Error(),
 			Status: 500,
 		}, false
 	}
 	userinfo, err := oauth2Service.Userinfo.V2.Me.Get().Do()
 	if err != nil {
-		return &domain.ErrorResponse{
+		return domain.User{}, &domain.ErrorResponse{
 			Message: err.Error(),
 			Status: 500,
 		}, false
@@ -82,19 +82,19 @@ func (o *OauthUseCase) GoogleCallback(code string) (*domain.ErrorResponse, bool)
 
 		err = o.userRepo.CreateUser(&newUser)
 		if err != nil {
-			return &domain.ErrorResponse{
+			return domain.User{}, &domain.ErrorResponse{
 				Message: err.Error(),
 				Status: 500,
 			}, false
 		}
-		return nil, true
+		return newUser, nil, true
 	}
 	if existing_user.GoogleID == ""{
-		return &domain.ErrorResponse{
+		return domain.User{}, &domain.ErrorResponse{
 			Message: "User not signed up with google",
 			Status: 200,
 		}, false
 	}
 
-	return nil, false
+	return *existing_user, nil, false
 }

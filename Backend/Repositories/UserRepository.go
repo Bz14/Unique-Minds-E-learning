@@ -109,4 +109,19 @@ func (ur *UserRepository) SignUpUser(user domain.User) error {
 	return nil
 }
 
+func (ur *UserRepository) UpdateRole(email string, role string) error {
+	timeOut := ur.config.TimeOut
+    ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
+    defer cancel()
+	filter := bson.M{
+		"email": email,
+	}
+	update := bson.M{
+		"$set": bson.M{
+			"role": role,
+		},
+	}
 
+	_, err := ur.userCollection.UpdateOne(ctx, filter, update)
+	return err
+}

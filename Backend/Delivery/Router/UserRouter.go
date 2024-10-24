@@ -39,4 +39,5 @@ func NewUserRouter(server *gin.RouterGroup, database *infrastructures.Database, 
 	authGroup.GET("/google", oauthController.GoogleAuth)
 	authGroup.GET("/callback", oauthController.GoogleCallback)
 	authGroup.POST("/login", userController.Login)
+	authGroup.POST("/role", userController.UpdateRole)
 }
