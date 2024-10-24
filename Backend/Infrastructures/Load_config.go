@@ -58,7 +58,7 @@ func LoadConfig() (*Config, error) {
 	clientSecret := os.Getenv("CLIENT_SECRET")
 	redirectUrl := os.Getenv("REDIRECT_URL")
 	state := os.Getenv("STATE")
-	role := os.Getenv("ROLE")
+	role := os.Getenv("REDIRECT_ROLE")
 	secret := os.Getenv("SECRET")
 	accessTokenExpiry := os.Getenv("ACCESS_TOKEN_EXPIRES_IN")
 	refreshTokenExpiry := os.Getenv("REFRESH_TOKEN_EXPIRES_IN")

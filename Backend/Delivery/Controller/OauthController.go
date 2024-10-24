@@ -79,8 +79,6 @@ func (oc *OauthController) GoogleCallback(ctx *gin.Context){
 	if isNew{
 		ctx.Redirect(http.StatusTemporaryRedirect, oc.config.RoleRedirect)
 		return
-	}else{
-		
 	}
 	ctx.JSON(http.StatusOK, domain.SuccessResponse{
 		Message: "User already exists",
