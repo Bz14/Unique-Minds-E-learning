@@ -10,7 +10,7 @@ interface CourseProps {
 
 const Course = (props: CourseProps) => {
   return (
-    <div className="course bg-white shadow-lg rounded-lg overflow-hidden transform transition hover:scale-105 hover:shadow-xl">
+    <div className="course bg-white shadow-lg rounded-lg overflow-hidden transform transition hover:scale-105 hover:shadow-xl mt-5 mb-5 sm:w-full">
       <div className="course__img">
         <Image
           src={props.course.image}
