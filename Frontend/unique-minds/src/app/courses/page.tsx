@@ -3,7 +3,9 @@ import SearchBar from "../components/UI/search_bar";
 const Courses = () => {
   return (
     <div>
-      <SearchBar />
+      <div className="mt-10">
+        <SearchBar />
+      </div>
       All Courses
     </div>
   );
