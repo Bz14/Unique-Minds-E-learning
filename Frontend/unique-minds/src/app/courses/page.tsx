@@ -1,3 +1,4 @@
+"use client";
 import SearchBar from "../components/UI/search_bar";
 import FilterBar from "../components/UI/filter_bar";
 import img from "../assets/img3.jpg";
@@ -92,15 +93,19 @@ const Courses = () => {
       <div className="mt-10">
         <SearchBar />
       </div>
-      <div className="mt-10">
-        <FilterBar />
-      </div>
-      <div className="m-10 flex flex-row flex-wrap justify-center p-10">
-        {courses.map((course) => (
-          <div key={course.id} className="w-72 mx-4 my-4">
-            <Course course={course} />
+      <div className="flex flex-row">
+        <div className="w-1/4 mt-10 sticky top-0 h-screen bg-white p-4 shadow-lg">
+          <FilterBar />
+        </div>
+        <div className="w-3/4 mt-10 p-4 overflow-y-auto">
+          <div className="flex flex-row flex-wrap justify-center">
+            {courses.map((course) => (
+              <div key={course.id} className="w-72 mx-4 my-4">
+                <Course course={course} />
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
