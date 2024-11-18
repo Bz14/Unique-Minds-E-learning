@@ -58,16 +58,25 @@ type CourseDetailResponse struct{
 
 type CourseRepository interface {
     FetchRecentCourses() ([]Course, error)
-    GetCourses(pageNo int64, pageSize int64, search string, tag string) ([]Course, Pagination, error)
-    GerCourseById(id string) (Course, error)
-    SaveCourse(userID string, courseID string) error
-    GetMyCourse(id string) ([]Course, error)
-    Save(course *Course, user_id string) error
-    DeleteCourse(courseID string) error
-    GetCoursesByEducator(userID string) ([]Course, error)
-    UpdateCourseProgress(courseID, userID string, completedParts []string) (CourseProgress, error)
-    GetCourseProgress(courseID, userID string) (*CourseProgress, error) 
+    GetCourses(int64, int64, string, string) ([]Course, Pagination, error)
+    GetCoursesByEducator(string) ([]Course, error)
+    GetCourseById(string) (Course, error)
 }
+
+
+type EducatorCourseRepository interface {
+    Save(*Course, string) error
+    DeleteCourse(string) error
+}
+
+type StudentCourseRepository interface {
+    SaveCourse(string, string) error
+    GetCourseById(string) (Course, error)
+    GetMyCourse(id string) ([]Course, error)
+    GetCourseProgress(courseID, userID string) (*CourseProgress, error)
+    UpdateCourseProgress(courseID, userID string, completedParts []string) (CourseProgress, error)
+}
+
 type CourseUseCaseInterface interface {
     GetRecentCourses() ([]Course, error)
     GetCourses(pageNo string, pageSize string, search string, filter string) ([]Course, Pagination, error)
