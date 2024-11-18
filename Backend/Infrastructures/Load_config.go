@@ -12,6 +12,10 @@ type Config struct {
 	DatabaseName    string
 	UsersCollection string
 	UnverifiedCollection string
+	ActiveUserCollection     string
+	CourseCollection         string
+	StudentProfileCollection string
+	EducatorProfileCollection string
 	ServerPort      int
 	TimeOut 	   int
 	SMTPHost        string
@@ -43,6 +47,10 @@ func LoadConfig() (*Config, error) {
 	url := os.Getenv("DATABASE_URL")
 	dbName := os.Getenv("DATABASE_NAME")
 	usersCollection := os.Getenv("USER_COLLECTION")
+	activeUserCollection := os.Getenv("ACTIVE_USER_COLLECTION")
+	courseCollection := os.Getenv("COURSE_COLLECTION")
+	studentProfileCollection := os.Getenv("STUDENT_PROFILE_COLLECTION")
+	educatorProfileCollection := os.Getenv("EDUCATOR_PROFILE_COLLECTION")
 	port := os.Getenv("PORT")
 	timeOut := os.Getenv("TIMEOUT")
 	smtpHost := os.Getenv("SMTP_HOST")
@@ -105,6 +113,9 @@ func LoadConfig() (*Config, error) {
 		DatabaseURL:     url,
 		DatabaseName:    dbName,
 		UsersCollection: usersCollection,
+		CourseCollection: courseCollection,
+		StudentProfileCollection: studentProfileCollection,
+		EducatorProfileCollection: educatorProfileCollection,
 		ServerPort:      port_str,
 		TimeOut:         timeOut_str,
 		SMTPHost:        smtpHost,
@@ -126,5 +137,6 @@ func LoadConfig() (*Config, error) {
 		RefreshTokenExpire: refreshExp,
 		CookieDomain: cookieDomain,
 		Environment: prodEnv,
+		ActiveUserCollection: activeUserCollection,
 	}, nil
 }

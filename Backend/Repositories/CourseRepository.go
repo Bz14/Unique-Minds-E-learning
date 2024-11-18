@@ -6,7 +6,8 @@ import (
 	"math"
 	"time"
 	domain "unique-minds/Domain"
-	infrastructure "unique-minds/Infrastructure"
+
+	infrastructure "unique-minds/Infrastructures"
 	utils "unique-minds/Utils"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -90,16 +91,13 @@ func (r *CourseRepository) FetchRecentCourses() ([]domain.Course, error) {
 }
 
 func (r *CourseRepository) GetCourses(pageNo int64, pageSize int64, search string, tag string) ([]domain.Course, domain.Pagination, error) {
-	// Initialize pagination
 	pagination := utils.PaginationByPage(pageNo, pageSize)
 
-	// Count total documents
 	totalResults, err := r.collection.CountDocuments(context.TODO(), bson.M{})
 	if err != nil {
 		return []domain.Course{}, domain.Pagination{}, err
 	}
 
-	// Construct the filter
 	filter := bson.M{}
 	if search != "" {
 		filter["name"] = bson.M{"$regex": search, "$options": "i"}
@@ -115,7 +113,6 @@ func (r *CourseRepository) GetCourses(pageNo int64, pageSize int64, search strin
 		return []domain.Course{}, domain.Pagination{}, err
 	}
 
-	// Decode results
 	var courses []domain.Course
 	for cursor.Next(context.TODO()) {
 		var course domain.Course
@@ -125,20 +122,17 @@ func (r *CourseRepository) GetCourses(pageNo int64, pageSize int64, search strin
 		courses = append(courses, course)
 	}
 
-	// Handle cursor errors
 	if err := cursor.Err(); err != nil {
 		return []domain.Course{}, domain.Pagination{}, err
 	}
 
-	// Close the cursor
 	cursor.Close(context.TODO())
 
-	// Create pagination info
 	paginationInfo := domain.Pagination{
 		CurrentPage: pageNo,
 		PageSize:    pageSize,
 		TotalPages:  totalPages,
-		TotatRecord: totalResults,
+		TotalRecord: totalResults,
 	}
 	return courses, paginationInfo, nil
 }
