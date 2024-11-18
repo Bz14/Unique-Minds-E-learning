@@ -80,11 +80,6 @@ func (u *UserUseCase) SignUp(user domain.User) (bool, error) {
 	return false, err
 }
 
-// FindEmail implements domain.UserUseCaseInterface.
-func (u *UserUseCase) FindEmail(email string) error {
-	_, err := u.userRepo.FindUserByEmail(email)
-	return err
-}
 
 func (u *UserUseCase) VerifyEmail(token string) error{
 	user, err := u.userRepo.FindUserByToken(token)
