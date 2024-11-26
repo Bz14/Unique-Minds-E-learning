@@ -1,100 +1,123 @@
 "use client";
-import Link from "next/link";
+// import { Link, useLocation } from "react-router-dom";
+// import { useEffect, useState } from "react";
 import { useState } from "react";
+import logo from "../../assets/logo.png";
 import Image from "next/image";
+import Link from "next/link";
+import defaultImg from "../../assets/image0_0.jpg";
 
-const Nav = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Navbar = () => {
+  const [accessToken, setAccessToken] = useState();
+  const [profileImage, setProfileImage] = useState(defaultImg);
+  const [role, setRole] = useState();
+  // const location = useLocation(); // Get current location
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  // useEffect(() => {
+  //   const token = localStorage.getItem("access_token");
+
+  //   if (token) {
+  //     setAccessToken(token);
+  //     fetchUserProfile(token);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   // If the current route is the homepage, reload the page
+  //   console.log(location.pathname);
+  //   if (location.pathname === "/") {
+  //     const hasReloaded = sessionStorage.getItem("hasReloadedHome");
+
+  //     if (!hasReloaded) {
+  //       sessionStorage.setItem("hasReloadedHome", "true");
+  //       window.location.reload();
+  //     }
+  //   }
+  // }, [location]); // Run the effect whenever the route changes
+
+  // const fetchUserProfile = async (token) => {
+  //   try {
+  //     const response = await fetch("/api/auth/user-profile", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       const profileImageUrl = data.profileImage
+  //         ? data.profileImage
+  //         : defaultImg;
+  //       setProfileImage(profileImageUrl);
+  //       setRole(data.role);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching profile:", error);
+  //   }
+  // };
 
   return (
-    <nav className="bg-customBlue px-4 py-2 shadow-md">
-      <div className="container mx-auto flex items-center justify-between">
-        <div className="text-white font-bold text-xl">
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={32}
-              height={32}
-              className="mr-2"
-            />
-            <span>YourLogo</span>
+    <nav className="bg-white shadow-md p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <Link href="/" className="text-customBlue text-lg font-bold">
+          <Image src={logo} alt="UniqueMinds" className="w-20 h-10" />
+        </Link>
+        <div className="flex items-center">
+          <Link href="/courses" className="text-customBlue mr-4">
+            Courses
           </Link>
-        </div>
+          <Link href="/educators" className="text-customBlue mr-4">
+            Educators
+          </Link>
+          <Link href="/footer" className="text-customBlue mr-4">
+            Contact Us
+          </Link>
 
-        <div className="block lg:hidden">
-          <button
-            className="text-white focus:outline-none"
-            onClick={toggleMenu}
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-              ></path>
-            </svg>
-          </button>
-        </div>
-
-        <div
-          className={`lg:flex items-center lg:space-x-6 ${
-            isOpen ? "block" : "hidden"
-          } lg:block`}
-        >
-          <ul className="flex flex-col lg:flex-row lg:space-x-6 space-y-2 lg:space-y-0">
-            <li>
-              <Link href="/courses" className="text-white hover:text-gray-300">
-                Courses
-              </Link>
-            </li>
-            <li>
-              <Link href="/teacher" className="text-white hover:text-gray-300">
-                Teacher
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/dashboard"
-                className="text-white hover:text-gray-300"
-              >
-                Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" className="text-white hover:text-gray-300">
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link href="/login" className="text-white hover:text-gray-300">
+          {!accessToken ? (
+            <>
+              <Link href="/login" className="text-customBlue mr-4">
                 Login
               </Link>
-            </li>
-            <li>
               <Link
                 href="/signup"
-                className="bg-white text-customBlue px-4 py-2 rounded-md hover:bg-gray-100"
+                className="bg-customBlue text-white px-4 py-2 rounded mr-4"
               >
-                Sign Up
+                Signup
               </Link>
-            </li>
-          </ul>
+            </>
+          ) : (
+            <>
+              {role === "student" && (
+                <Link href="/student_dashboard" className="mr-4">
+                  <div className="flex items-center">
+                    <Image
+                      src={profileImage}
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  </div>
+                </Link>
+              )}
+              {role === "educator" && (
+                <Link
+                  href="/educator_dashboard"
+                  className="text-customBlue mr-4"
+                >
+                  <div className="flex items-center">
+                    <Image
+                      src={profileImage}
+                      alt="Profile"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                  </div>
+                </Link>
+              )}
+            </>
+          )}
         </div>
       </div>
     </nav>
   );
 };
 
-export default Nav;
+export default Navbar;
