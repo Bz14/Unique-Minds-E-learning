@@ -1,5 +1,5 @@
 import React from "react";
-import donateImage from "../../../assets/herosecrtion.jpg";
+import donateImage from "@assets/herosecrtion.jpg";
 import Image from "next/image";
 
 const CallToAction = () => {

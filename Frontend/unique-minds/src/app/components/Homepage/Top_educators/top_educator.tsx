@@ -1,31 +1,28 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-
-interface Educator {
-  id: number;
-  name: string;
-  image: string;
-  rank: number;
-}
+import person1 from "@assets/person1.jpg";
+import person2 from "@assets/person2.jpg";
+import person3 from "@assets/person3.jpg";
+import { StaticImageData } from "next/image";
 
 const TopEducators = () => {
-  const [educators, setEducators] = useState<Educator[]>([
+  const [educators, setEducators] = useState([
     {
       id: 1,
       name: "Jane Doe",
-      image: "../../../assets/person1.jpg",
+      image: person1,
       rank: 1,
     },
     {
       id: 2,
       name: "John Smith",
-      image: "../../../assets/person2.jpg",
+      image: person2,
       rank: 2,
     },
     {
       id: 3,
       name: "Alice Johnson",
-      image: "../../../assets/person3.jpg",
+      image: person3,
       rank: 3,
     },
   ]);
@@ -70,7 +67,7 @@ const TopEducators = () => {
             }}
           >
             <motion.img
-              src={educator.image}
+              src={(educator.image as StaticImageData).src}
               alt={educator.name}
               className="w-48 h-48 object-cover rounded-full mx-auto"
               initial={{ opacity: 0, scale: 0.9 }}
