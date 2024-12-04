@@ -1,1 +1,1 @@
-# Unique-Minds
+# E-learning Platform
