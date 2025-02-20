@@ -1,26 +1,3 @@
-// Routers sets up the routing for the server group with the provided database and configuration.
-// It initializes the necessary collections, repositories, services, use cases, and controllers.
-// It also defines the routes for user authentication, course management, profile management,
-// and other functionalities.
-//
-// Parameters:
-// - serverGroup: The main router group for the server.
-// - db: The database infrastructure instance.
-// - config: The configuration instance containing database and other settings.
-//
-// The function performs the following tasks:
-// 1. Initializes database collections for users, active users, courses, student profiles, and educator profiles.
-// 2. Creates repositories for users and courses.
-// 3. Sets up services such as password service.
-// 4. Initializes use cases for courses and users.
-// 5. Creates controllers for users and courses.
-// 6. Defines middleware for authentication.
-// 7. Sets up routes for:
-//   - User authentication (signup, login, email verification, password reset, logout, profile retrieval).
-//   - Token management (refresh token).
-//   - Course management (upload, retrieval, progress update, review saving).
-//   - Educator and student management (profile retrieval, schedule management, availability setting).
-//   - File upload (profile image, course files).
 package routers
 
 import (

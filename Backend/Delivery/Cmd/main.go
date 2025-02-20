@@ -8,9 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// main initializes the application by loading the environment configuration,
-// setting up the database connection, configuring CORS middleware, and starting
-// the HTTP server with the specified routes and port.
 func main() {
     config, err := infrastructure.LoadEnv()
     if err != nil {

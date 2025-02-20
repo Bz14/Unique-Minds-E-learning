@@ -16,30 +16,17 @@ type UserControllers struct{
 	userUserCase domain.UserUseCaseInterface
 }
 
-// NewUserControllers creates a new instance of UserControllers with the provided UserUseCaseInterface.
-// It initializes the UserControllers struct with the given userUseCase.
-// 
-// Parameters:
-// - userUseCase: An implementation of the UserUseCaseInterface.
-//
-// Returns:
-// - A pointer to a newly created UserControllers instance.
 func NewUserControllers(userUseCase domain.UserUseCaseInterface) *UserControllers {
 	return &UserControllers{
 		userUserCase: userUseCase,
 	}
 }
-
-
-// A registerUser function creates a new user account.
-// It binds the request body to a SignUpRequest struct and validates the request.
-// If the request is invalid, it returns a 400 status code with an error message.
-// If the RegisterUser method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) RegisterUser(c *gin.Context){
 	var signUp domain.SignUpRequest
 	var user domain.User
 
 	err := c.BindJSON(&signUp)
+	
 	if err != nil {
 		c.JSON(400, domain.ErrorResponse{
 			Message: err.Error(),
@@ -74,11 +61,6 @@ func (uc *UserControllers) RegisterUser(c *gin.Context){
 
 }
 
-// A VerifyEmail function verifies a user's email address.
-// It extracts the token and email from the query parameters.
-// If the token or email is missing, it returns a 400 status code with an error message.
-// If the VerifyEmail method is successful, it redirects the user to the verification page.
-// If the VerifyEmail method fails, it returns a 400 status code with an error message.
 func (uc *UserControllers) VerifyEmail(c *gin.Context){
 	token := c.Query("token")
 	email := c.Query("email")
@@ -102,10 +84,6 @@ func (uc *UserControllers) VerifyEmail(c *gin.Context){
 	c.Redirect(http.StatusFound, "http://localhost:3000/verification")
 }
 
-// A Login function logs a user into the system.
-// It binds the request body to a LoginRequest struct and validates the request.
-// If the request is invalid, it returns a 400 status code with an error message.
-// If the Login method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) Login(c *gin.Context){
 	var loginRequest domain.LoginRequest
 	var user domain.User
@@ -145,10 +123,6 @@ func (uc *UserControllers) Login(c *gin.Context){
 }
 
 
-// A RefreshToken function refreshes a user's token.
-// It binds the request body to a RefreshTokenRequest struct and validates the request.
-// If the request is invalid, it returns a 400 status code with an error message.
-// If the RefreshToken method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) RefreshToken(c *gin.Context){
 	var request domain.RefreshTokenRequest
 	err := c.ShouldBind(&request)
@@ -184,10 +158,6 @@ func (uc *UserControllers) RefreshToken(c *gin.Context){
 
 }
 
-// A ResetPassword function sends a password reset link to a user's email.
-// It binds the request body to a ResetPasswordRequest struct and validates the request.
-// If the request is invalid, it returns a 400 status code with an error message.
-// If the ResetPassword method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) ResetPassword(c *gin.Context){
 	var request domain.ResetPasswordRequest
 	err := c.ShouldBind(&request)
@@ -219,10 +189,6 @@ func (uc *UserControllers) ResetPassword(c *gin.Context){
 	})
 }
 
-// A ResetPasswordVerify function verifies a user's password reset token.
-// It binds the request body to a ResetPassword struct and validates the request.
-// If the request is invalid, it returns a 400 status code with an error message.
-// If the ResetPasswordVerify method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) ResetPasswordVerify(c *gin.Context){
 	var newPassword domain.ResetPassword
 	token := c.Query("token")
@@ -264,10 +230,7 @@ func (uc *UserControllers) ResetPasswordVerify(c *gin.Context){
 		Status:  200,})
 }
 
-// A Logout function logs a user out of the system.
-// It extracts the user_id from the context and the user_agent from the request.
-// If the user_id is missing, it returns a 400 status code with an error message.
-// If the Logout method is successful, it returns a 200 status code with a success message.
+
 func (uc *UserControllers) Logout(c *gin.Context) {
 	user_id := c.GetString("user_id")
 	user_agent := c.Request.UserAgent()
@@ -286,10 +249,6 @@ func (uc *UserControllers) Logout(c *gin.Context) {
 }
 
 
-// A uploadProfileImage function uploads a user's profile image.
-// It extracts the file from the form data and saves it to the uploads directory.
-// If the file is missing, it returns a 400 status code with an error message.
-// If the SaveProfileImage method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) UploadProfileImage (ctx *gin.Context) {
     file, err := ctx.FormFile("file")
 
@@ -317,10 +276,6 @@ func (uc *UserControllers) UploadProfileImage (ctx *gin.Context) {
     ctx.JSON(http.StatusOK, gin.H{"fileUrl": fileURL})
 }
 
-// A GetEducators function fetches all educators from the database.
-// It extracts the page number, page size, and search query from the query parameters.
-// If the page number or page size is missing, it sets the default values to 1 and 10 respectively.
-// If the GetEducators method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) GetEducators(ctx *gin.Context) {
 	pageNo := ctx.Query("page")
 	pageSize := ctx.Query("limit")
@@ -353,9 +308,6 @@ func (uc *UserControllers) GetEducators(ctx *gin.Context) {
 	}
 }
 
-// A GetEducatorById function fetches an educator by their ID.
-// It extracts the educator ID from the path parameter.
-// If the GetEducatorById method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) GetEducatorById(ctx *gin.Context) {
     id := ctx.Param("id")
     course, err := uc.userUserCase.GetEducatorById(id)
@@ -368,10 +320,6 @@ func (uc *UserControllers) GetEducatorById(ctx *gin.Context) {
     ctx.JSON(http.StatusOK, course)
 }
 
-// A  SaveReview function saves a review for an educator.
-// It binds the request body to a Review struct and validates the request.
-// If the request is invalid, it returns a 400 status code with an error message.
-// If the SaveReview method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) SaveReview(ctx *gin.Context) {
 	var review domain.Review
 
@@ -394,12 +342,6 @@ func (uc *UserControllers) SaveReview(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Review Saved successfully"})
 }
 
-
-// A GetProfile function fetches a user's profile.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the user type is educator, it calls the GetEducatorProfile method.
-// If the user type is student, it calls the GetStudentProfile method.
 func  (uc *UserControllers) GetProfile(c *gin.Context) {
 	user_id := c.GetString("user_id")
 	if user_id == "" {
@@ -425,11 +367,6 @@ func  (uc *UserControllers) GetProfile(c *gin.Context) {
 	}
 }
 
-// A UpdateProfile function updates a user's profile.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the user type is educator, it calls the UpdateEducatorProfile method.
-// If the user type is student, it calls the UpdateStudentProfile method.
 func  (uc *UserControllers) UpdateProfile(c *gin.Context) {
 	user_id := c.GetString("user_id")
 	user_type := c.GetString("user_type")
@@ -465,10 +402,6 @@ func  (uc *UserControllers) UpdateProfile(c *gin.Context) {
 	}
 }
 
-// A setAvailability function sets a user's availability.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the SetAvailability method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) SetAvailability(c *gin.Context) {
     user_id := c.GetString("user_id")
     if user_id == "" {
@@ -493,11 +426,6 @@ func (uc *UserControllers) SetAvailability(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"message": "Availability set successfully"})
 }
 
-// GetSchedule fetches a user's schedule.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the user type is educator, it calls the GetEducatorSchedules method.
-// If the user type is student, it calls the GetStudentSchedules method.
 func (uc *UserControllers) GetSchedules(ctx *gin.Context) {
     user_id := ctx.GetString("user_id")
     if user_id == ""{
@@ -512,10 +440,6 @@ func (uc *UserControllers) GetSchedules(ctx *gin.Context) {
     ctx.JSON(http.StatusOK, schedules)
 }
 
-// GetStudentSchedules fetches a student's schedule.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the GetStudentSchedules method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) GetStudentSchedules(ctx *gin.Context) {
     user_id := ctx.GetString("user_id")
     if user_id == ""{
@@ -530,10 +454,6 @@ func (uc *UserControllers) GetStudentSchedules(ctx *gin.Context) {
     ctx.JSON(http.StatusOK, schedules)
 }
 
-// CancelSchedule cancels a user's schedule.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the CancelSchedule method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) CancelSchedule(ctx *gin.Context) {
 	user_id := ctx.GetString("user_id")
     if user_id == ""{
@@ -550,10 +470,6 @@ func (uc *UserControllers) CancelSchedule(ctx *gin.Context) {
     ctx.JSON(http.StatusOK, gin.H{"message": "Schedule canceled successfully"})
 }
 
-// CancelEducatorSchedule cancels an educator's schedule.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the CancelSchedule method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) CancelEducatorSchedule(ctx *gin.Context) {
 	user_id := ctx.GetString("user_id")
     if user_id == ""{
@@ -570,10 +486,7 @@ func (uc *UserControllers) CancelEducatorSchedule(ctx *gin.Context) {
     ctx.JSON(http.StatusOK, gin.H{"message": "Schedule canceled successfully"})
 }
 
-// GetEducatorCourses fetches an educator's courses.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the GetEducatorCourses method is successful, it returns a 200 status code with a success message
+
 func (uc *UserControllers) GetStudentsByCourses(c *gin.Context) {
 	user_id := c.GetString("user_id")
 	if user_id == "" {
@@ -590,10 +503,6 @@ func (uc *UserControllers) GetStudentsByCourses(c *gin.Context) {
     c.JSON(http.StatusOK, studentsByCourses)
 }
 
-// GetUserProfile fetches a user's profile.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the GetUserProfile method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) GetUserProfile(c *gin.Context) {
     userID  := c.GetString("user_id")
     if userID == "" {
@@ -613,8 +522,6 @@ func (uc *UserControllers) GetUserProfile(c *gin.Context) {
     })
 }
 
-// GetTopEducators fetches the top educators.
-// If the GetTopEducators method is successful, it returns a 200 status code with a success message.
 func (uc *UserControllers) GetTopEducators(c *gin.Context) {
     topEducators, err := uc.userUserCase.GetTopEducatorsUseCase()
     if err != nil {
@@ -624,10 +531,6 @@ func (uc *UserControllers) GetTopEducators(c *gin.Context) {
     c.JSON(http.StatusOK, topEducators)
 }
 
-// GetEducatorCourses fetches an educator's courses.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the GetEducatorCourses method is successful, it returns a 200 status code with a success message
 func (uc *UserControllers) GetCourseProgress(c *gin.Context) {
 	userID := c.GetString("user_id")
 	if userID == "" {
@@ -644,10 +547,6 @@ func (uc *UserControllers) GetCourseProgress(c *gin.Context) {
 	c.JSON(http.StatusOK, courseProgress)
 }
 
-// ScheduleSession schedules a session between a student and an educator.
-// It extracts the user ID from the context.
-// If the user ID is missing, it returns a 401 status code with an error message.
-// If the ScheduleSession method is successful, it returns a 200 status code with a success message.
 func  (uc *UserControllers) ScheduleSession(c *gin.Context) {
 	user_id := c.GetString("user_id")
 	if user_id == ""{

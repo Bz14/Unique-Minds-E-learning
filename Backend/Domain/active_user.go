@@ -6,14 +6,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// ActiveUser struct
 type ActiveUser struct {
 	ID           primitive.ObjectID `json:"_id" bson:"_id"`
 	Username     string             `json:"username" bson:"username"`
 	RefreshToken string             `json:"refresh_token" bson:"refresh_token"`
 	UserAgent    string             `json:"user_agent" bson:"user_agent"`
 }
-// ActiveUserRepository interface
 type ActiveUserRepository interface {
 	CreateActiveUser(au ActiveUser, c context.Context) error
 	FindActiveUser(id string, user_agent string, c context.Context) (ActiveUser, error)
