@@ -4,7 +4,6 @@
 
 This project is an e-learning platform designed specifically for children with Down syndrome. It provides educators with the tools to upload courses, set their availability, and track students' progress. Students can access course materials, track their own learning, and schedule sessions with their educators. The platform is built with a user-friendly interface to enhance accessibility and ease of use. It ensures that both students and educators can interact seamlessly, making learning more engaging and personalized.
 
-- **Deployed Project**: [Link](https://unique-minds.vercel.app/)
 - **Final Project Blog**: [Link](https://medium.com/@eyerusalembezu15/my-journey-in-building-unique-minds-an-e-learning-platform-for-children-with-down-syndrome-e4d49bc8b456)
 - **Author's LinkedIn**: [Link](https://www.linkedin.com/in/eybz)
 
